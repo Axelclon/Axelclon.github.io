@@ -4,247 +4,729 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Información Personal</title>
-    <!-- Tus estilos y librerías se mantienen, son perfectos -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Tu CSS está perfecto, no se ha modificado. */
-        body { font-family: 'Poppins', sans-serif; background: linear-gradient(145deg, #fdf2f8 0%, #fce7f3 30%, #fbcfe8 60%, #f9a8d4 100%); min-height: 100vh; position: relative; overflow-x: hidden; }
-        .floating-hearts { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-        .heart { position: absolute; color: rgba(236, 72, 153, 0.3); animation: floatHeart 8s linear infinite; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(145deg, #fdf2f8 0%, #fce7f3 30%, #fbcfe8 60%, #f9a8d4 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Elementos decorativos flotantes */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            color: rgba(236, 72, 153, 0.3);
+            animation: floatHeart 8s linear infinite;
+        }
+
         .heart:nth-child(1) { left: 10%; animation-delay: 0s; font-size: 12px; }
         .heart:nth-child(2) { left: 25%; animation-delay: 2s; font-size: 16px; }
         .heart:nth-child(3) { left: 40%; animation-delay: 4s; font-size: 10px; }
         .heart:nth-child(4) { left: 60%; animation-delay: 1s; font-size: 14px; }
         .heart:nth-child(5) { left: 80%; animation-delay: 3s; font-size: 12px; }
         .heart:nth-child(6) { left: 90%; animation-delay: 5s; font-size: 18px; }
-        @keyframes floatHeart { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-20px) rotate(360deg); opacity: 0; } }
-        .wave-bg { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(45deg, rgba(236, 72, 153, 0.1), rgba(244, 114, 182, 0.1)); clip-path: ellipse(100% 100% at 50% 100%); animation: waveMove 6s ease-in-out infinite; z-index: 1; }
-        @keyframes waveMove { 0%, 100% { transform: translateX(-5%); } 50% { transform: translateX(5%); } }
-        .title-glow { font-family: 'Dancing Script', cursive; background: linear-gradient(45deg, #ec4899, #f472b6, #f9a8d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0 0 20px rgba(236, 72, 153, 0.3); animation: titleGlow 3s ease-in-out infinite; }
-        @keyframes titleGlow { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.2); } }
-        .main-container { position: relative; z-index: 10; padding: 1rem; min-height: 100vh; }
-        .form-glass { background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); border: 1px solid rgba(236, 72, 153, 0.2); border-radius: 2rem; box-shadow: 0 8px 32px rgba(236, 72, 153, 0.1); }
-        .input-pink { background: rgba(255, 255, 255, 0.8); border: 2px solid rgba(236, 72, 153, 0.3); border-radius: 1.5rem; transition: all 0.3s ease; font-size: 16px; }
-        .input-pink:focus { border-color: #ec4899; box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1); transform: translateY(-1px); }
-        .btn-pink { background: linear-gradient(135deg, #ec4899, #f472b6); color: white; border-radius: 2rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); position: relative; overflow: hidden; }
-        .btn-pink:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4); }
-        .btn-pink::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent); transition: left 0.5s ease; }
-        .btn-pink:active::before { left: 100%; }
-        .btn-outline-pink { border: 2px solid #ec4899; color: #ec4899; border-radius: 2rem; font-weight: 600; transition: all 0.3s ease; }
-        .btn-outline-pink:hover { background: #ec4899; color: white; transform: translateY(-2px); }
-        .radio-pink { accent-color: #ec4899; transform: scale(1.2); }
-        .conditional-section { border-left: 3px solid #ec4899; background: linear-gradient(90deg, rgba(236, 72, 153, 0.05), transparent); border-radius: 0 1rem 1rem 0; animation: slideInLeft 0.5s ease-out; }
-        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-        .modal-pink { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); }
-        .section-icon { background: linear-gradient(135deg, #ec4899, #f472b6); color: white; border-radius: 50%; width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
-        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; transform: translateY(30px); }
-        .fade-in-up:nth-child(1) { animation-delay: 0.1s; } .fade-in-up:nth-child(2) { animation-delay: 0.2s; } .fade-in-up:nth-child(3) { animation-delay: 0.3s; }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 640px) { .heart { display: none; } .input-pink { font-size: 16px; } }
-        .loading { opacity: 0.7; pointer-events: none; }
-        .loading::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; border: 2px solid #ec4899; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes floatHeart {
+            0% { 
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-20px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Ondas decorativas */
+        .wave-bg {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(45deg, rgba(236, 72, 153, 0.1), rgba(244, 114, 182, 0.1));
+            clip-path: ellipse(100% 100% at 50% 100%);
+            animation: waveMove 6s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes waveMove {
+            0%, 100% { transform: translateX(-5%); }
+            50% { transform: translateX(5%); }
+        }
+
+        /* Título con efecto brillante */
+        .title-glow {
+            font-family: 'Dancing Script', cursive;
+            background: linear-gradient(45deg, #ec4899, #f472b6, #f9a8d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        /* Contenedor principal */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+
+        /* Formulario con glassmorphism */
+        .form-glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(236, 72, 153, 0.2);
+            border-radius: 2rem;
+            box-shadow: 0 8px 32px rgba(236, 72, 153, 0.1);
+        }
+
+        /* Inputs estilizados */
+        .input-pink {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(236, 72, 153, 0.3);
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
+            font-size: 16px; /* Evita zoom en iOS */
+        }
+
+        .input-pink:focus {
+            border-color: #ec4899;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* Botones con efecto */
+        .btn-pink {
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            color: white;
+            border-radius: 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-pink:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);
+        }
+
+        .btn-pink::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-pink:active::before {
+            left: 100%;
+        }
+
+        .btn-outline-pink {
+            border: 2px solid #ec4899;
+            color: #ec4899;
+            border-radius: 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-pink:hover {
+            background: #ec4899;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Radio y checkbox personalizados */
+        .radio-pink {
+            accent-color: #ec4899;
+            transform: scale(1.2);
+        }
+
+        /* Secciones condicionales */
+        .conditional-section {
+            border-left: 3px solid #ec4899;
+            background: linear-gradient(90deg, rgba(236, 72, 153, 0.05), transparent);
+            border-radius: 0 1rem 1rem 0;
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Modal personalizado */
+        .modal-pink {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Iconos decorativos */
+        .section-icon {
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            color: white;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Animaciones de entrada */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .fade-in-up:nth-child(1) { animation-delay: 0.1s; }
+        .fade-in-up:nth-child(2) { animation-delay: 0.2s; }
+        .fade-in-up:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Optimizaciones móviles */
+        @media (max-width: 640px) {
+            .heart {
+                display: none; /* Reduce elementos en móviles para mejor rendimiento */
+            }
+            
+            .input-pink {
+                font-size: 16px; /* Evita zoom automático en iOS */
+            }
+        }
+
+        /* Estados de carga */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #ec4899;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <!-- Tu HTML es perfecto y se mantiene -->
-    <div class="floating-hearts"> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> </div>
+    <!-- Elementos decorativos -->
+    <div class="floating-hearts">
+        <i class="fas fa-heart heart"></i>
+        <i class="fas fa-heart heart"></i>
+        <i class="fas fa-heart heart"></i>
+        <i class="fas fa-heart heart"></i>
+        <i class="fas fa-heart heart"></i>
+        <i class="fas fa-heart heart"></i>
+    </div>
+    
     <div class="wave-bg"></div>
-    <div id="messageModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 invisible transition-all duration-300 p-4"> <div class="modal-pink p-6 max-w-sm w-full text-center transform scale-75 transition-transform duration-300"> <div class="section-icon mx-auto mb-4"> <i id="modalIcon" class="fas fa-heart"></i> </div> <h3 id="modalTitle" class="text-xl font-semibold text-pink-600 mb-3"></h3> <p id="modalMessage" class="text-gray-600 mb-6 leading-relaxed"></p> <button id="modalClose" class="btn-pink px-6 py-3 w-full font-medium"> <i class="fas fa-check mr-2"></i>Entendido </button> </div> </div>
+
+    <!-- Modal -->
+    <div id="messageModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 invisible transition-all duration-300 p-4">
+        <div class="modal-pink p-6 max-w-sm w-full text-center transform scale-75 transition-transform duration-300">
+            <div class="section-icon mx-auto mb-4">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h3 id="modalTitle" class="text-xl font-semibold text-pink-600 mb-3"></h3>
+            <p id="modalMessage" class="text-gray-600 mb-6 leading-relaxed"></p>
+            <button id="modalClose" class="btn-pink px-6 py-3 w-full font-medium">
+                <i class="fas fa-check mr-2"></i>Entendido
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
     <div class="main-container">
-        <div class="text-center mb-8 fade-in-up"> <h1 class="title-glow text-4xl font-bold mb-2"> <i class="fas fa-user-circle mr-2"></i>Mi Perfil </h1> <p class="text-pink-600 font-medium">Información personal y bienestar</p> </div>
+        <div class="text-center mb-8 fade-in-up">
+            <h1 class="title-glow text-4xl font-bold mb-2">
+                <i class="fas fa-user-circle mr-2"></i>Mi Perfil
+            </h1>
+            <p class="text-pink-600 font-medium">Información personal y bienestar</p>
+        </div>
+
         <form id="personalInfoForm" class="form-glass p-6 space-y-6 fade-in-up">
+            <!-- Sección Salud -->
             <div class="space-y-4">
-                <div class="flex items-center space-x-3 mb-4"> <div class="section-icon"> <i class="fas fa-heartbeat"></i> </div> <h2 class="text-xl font-semibold text-pink-700">Salud y Bienestar</h2> </div>
-                <div class="space-y-2 fade-in-up"> <label for="age" class="block text-pink-700 font-medium text-sm"> <i class="fas fa-birthday-cake mr-2"></i>Edad </label> <input type="number" id="age" min="12" max="100" class="input-pink w-full px-4 py-3 focus:outline-none" placeholder="Tu edad"> </div>
-                <div class="space-y-3 fade-in-up"> <label class="block text-pink-700 font-medium text-sm"> <i class="fas fa-shield-alt mr-2"></i>¿Tienes alguna ITS? </label> <div class="flex space-x-6"> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="its" value="si" class="radio-pink"> <span class="text-gray-700">Sí</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="its" value="no" checked class="radio-pink"> <span class="text-gray-700">No</span> </label> </div> </div>
-                <div id="its-details" class="conditional-section p-4 space-y-4 hidden"> <div class="space-y-2"> <label for="its-type" class="block text-pink-700 font-medium text-sm">¿Cuál?</label> <input type="text" id="its-type" class="input-pink w-full px-4 py-3 focus:outline-none" placeholder="Especifica el tipo"> </div> <div class="space-y-2"> <label for="its-medication" class="block text-pink-700 font-medium text-sm">¿Medicamento?</label> <input type="text" id="its-medication" class="input-pink w-full px-4 py-3 focus:outline-none" placeholder="Medicamento actual"> </div> </div>
-                <div class="space-y-3 fade-in-up"> <label class="block text-pink-700 font-medium text-sm"> <i class="fas fa-heart mr-2"></i>¿Tienes pareja? </label> <div class="flex space-x-6"> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="pareja" value="si" class="radio-pink"> <span class="text-gray-700">Sí</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="pareja" value="no" checked class="radio-pink"> <span class="text-gray-700">No</span> </label> </div> </div>
-                <div class="space-y-3 fade-in-up"> <label class="block text-pink-700 font-medium text-sm"> <i class="fas fa-baby mr-2"></i>¿Tienes hijos? </label> <div class="flex space-x-6"> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="hijos" value="si" class="radio-pink"> <span class="text-gray-700">Sí</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="hijos" value="no" checked class="radio-pink"> <span class="text-gray-700">No</span> </label> </div> </div>
-                <div class="space-y-3 fade-in-up"> <label class="block text-pink-700 font-medium text-sm"> <i class="fas fa-pills mr-2"></i>¿Consumes sustancias? </label> <div class="flex space-x-6"> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="sustancias" value="si" class="radio-pink"> <span class="text-gray-700">Sí</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="sustancias" value="no" checked class="radio-pink"> <span class="text-gray-700">No</span> </label> </div> </div>
-                <div id="sustancias-details" class="conditional-section p-4 space-y-4 hidden"> <label class="block text-pink-700 font-medium text-sm mb-3">Marca las que consumes:</label> <div class="grid grid-cols-2 gap-3"> <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" name="sustancia" value="marihuana" class="radio-pink"> <span class="text-gray-700 text-sm">Marihuana</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" name="sustancia" value="hongos" class="radio-pink"> <span class="text-gray-700 text-sm">Hongos</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" name="sustancia" value="lsd" class="radio-pink"> <span class="text-gray-700 text-sm">LSD</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" name="sustancia" value="mdma" class="radio-pink"> <span class="text-gray-700 text-sm">MDMA</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" name="sustancia" value="cocaina" class="radio-pink"> <span class="text-gray-700 text-sm">Cocaína</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="checkbox" name="sustancia" value="ketamina" class="radio-pink"> <span class="text-gray-700 text-sm">Ketamina</span> </label> <label class="flex items-center space-x-2 cursor-pointer col-span-2"> <input type="checkbox" name="sustancia" value="ayahuasca" class="radio-pink"> <span class="text-gray-700 text-sm">Ayahuasca</span> </label> </div> </div>
-                <div class="space-y-3 fade-in-up"> <label class="block text-pink-700 font-medium text-sm"> <i class="fas fa-briefcase mr-2"></i>¿Trabajo sexual? </label> <div class="flex space-x-6"> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="trabajo-sexual" value="si" class="radio-pink"> <span class="text-gray-700">Sí</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="trabajo-sexual" value="no" checked class="radio-pink"> <span class="text-gray-700">No</span> </label> </div> </div>
-                <div class="space-y-3 fade-in-up"> <label class="block text-pink-700 font-medium text-sm"> <i class="fas fa-wine-glass-alt mr-2"></i>¿Consumes licor? </label> <div class="flex space-x-6"> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="licor" value="si" class="radio-pink"> <span class="text-gray-700">Sí</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="licor" value="no" checked class="radio-pink"> <span class="text-gray-700">No</span> </label> </div> </div>
-                <div class="space-y-3 fade-in-up"> <label class="block text-pink-700 font-medium text-sm"> <i class="fas fa-female mr-2"></i>¿Has tenido abortos? </label> <div class="flex space-x-6"> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="aborto" value="si" class="radio-pink"> <span class="text-gray-700">Sí</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="aborto" value="no" checked class="radio-pink"> <span class="text-gray-700">No</span> </label> </div> </div>
-                <div class="space-y-3 fade-in-up"> <label class="block text-pink-700 font-medium text-sm"> <i class="fas fa-procedures mr-2"></i>¿Te han hecho legrados? </label> <div class="flex space-x-6"> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="legrado" value="si" class="radio-pink"> <span class="text-gray-700">Sí</span> </label> <label class="flex items-center space-x-2 cursor-pointer"> <input type="radio" name="legrado" value="no" checked class="radio-pink"> <span class="text-gray-700">No</span> </label> </div> </div>
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="section-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-pink-700">Salud y Bienestar</h2>
+                </div>
+
+                <!-- Edad -->
+                <div class="space-y-2 fade-in-up">
+                    <label for="age" class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-birthday-cake mr-2"></i>Edad
+                    </label>
+                    <input type="number" id="age" min="12" max="100" 
+                           class="input-pink w-full px-4 py-3 focus:outline-none"
+                           placeholder="Tu edad">
+                </div>
+
+                <!-- ITS -->
+                <div class="space-y-3 fade-in-up">
+                    <label class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-shield-alt mr-2"></i>¿Tienes alguna ITS?
+                    </label>
+                    <div class="flex space-x-6">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="its" id="its-si" value="si" class="radio-pink">
+                            <span class="text-gray-700">Sí</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="its" id="its-no" value="no" checked class="radio-pink">
+                            <span class="text-gray-700">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Detalles ITS -->
+                <div id="its-details" class="conditional-section p-4 space-y-4 hidden">
+                    <div class="space-y-2">
+                        <label for="its-type" class="block text-pink-700 font-medium text-sm">
+                            ¿Cuál?
+                        </label>
+                        <input type="text" id="its-type" 
+                               class="input-pink w-full px-4 py-3 focus:outline-none"
+                               placeholder="Especifica el tipo">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="its-medication" class="block text-pink-700 font-medium text-sm">
+                            ¿Medicamento?
+                        </label>
+                        <input type="text" id="its-medication"
+                               class="input-pink w-full px-4 py-3 focus:outline-none"
+                               placeholder="Medicamento actual">
+                    </div>
+                </div>
+
+                <!-- Pareja -->
+                <div class="space-y-3 fade-in-up">
+                    <label class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-heart mr-2"></i>¿Tienes pareja?
+                    </label>
+                    <div class="flex space-x-6">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="pareja" value="si" id="pareja-si" class="radio-pink">
+                            <span class="text-gray-700">Sí</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="pareja" value="no" checked id="pareja-no" class="radio-pink">
+                            <span class="text-gray-700">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Hijos -->
+                <div class="space-y-3 fade-in-up">
+                    <label class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-baby mr-2"></i>¿Tienes hijos?
+                    </label>
+                    <div class="flex space-x-6">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="hijos" value="si" id="hijos-si" class="radio-pink">
+                            <span class="text-gray-700">Sí</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="hijos" value="no" checked id="hijos-no" class="radio-pink">
+                            <span class="text-gray-700">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Sustancias -->
+                <div class="space-y-3 fade-in-up">
+                    <label class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-pills mr-2"></i>¿Consumes sustancias?
+                    </label>
+                    <div class="flex space-x-6">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="sustancias" id="sustancias-si" value="si" class="radio-pink">
+                            <span class="text-gray-700">Sí</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="sustancias" id="sustancias-no" value="no" checked class="radio-pink">
+                            <span class="text-gray-700">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Detalles sustancias -->
+                <div id="sustancias-details" class="conditional-section p-4 space-y-4 hidden">
+                    <label class="block text-pink-700 font-medium text-sm mb-3">
+                        Marca las que consumes:
+                    </label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" name="sustancia" value="marihuana" id="marihuana" class="radio-pink">
+                            <span class="text-gray-700 text-sm">Marihuana</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" name="sustancia" value="hongos" id="hongos" class="radio-pink">
+                            <span class="text-gray-700 text-sm">Hongos</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" name="sustancia" value="lsd" id="lsd" class="radio-pink">
+                            <span class="text-gray-700 text-sm">LSD</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" name="sustancia" value="mdma" id="mdma" class="radio-pink">
+                            <span class="text-gray-700 text-sm">MDMA</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" name="sustancia" value="cocaina" id="cocaina" class="radio-pink">
+                            <span class="text-gray-700 text-sm">Cocaína</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" name="sustancia" value="ketamina" id="ketamina" class="radio-pink">
+                            <span class="text-gray-700 text-sm">Ketamina</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer col-span-2">
+                            <input type="checkbox" name="sustancia" value="ayahuasca" id="ayahuasca" class="radio-pink">
+                            <span class="text-gray-700 text-sm">Ayahuasca</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Resto de preguntas con el mismo patrón -->
+                <div class="space-y-3 fade-in-up">
+                    <label class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-briefcase mr-2"></i>¿Trabajo sexual?
+                    </label>
+                    <div class="flex space-x-6">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="trabajo-sexual" value="si" id="trabajo-sexual-si" class="radio-pink">
+                            <span class="text-gray-700">Sí</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="trabajo-sexual" value="no" checked id="trabajo-sexual-no" class="radio-pink">
+                            <span class="text-gray-700">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="space-y-3 fade-in-up">
+                    <label class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-wine-glass-alt mr-2"></i>¿Consumes licor?
+                    </label>
+                    <div class="flex space-x-6">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="licor" value="si" id="licor-si" class="radio-pink">
+                            <span class="text-gray-700">Sí</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="licor" value="no" checked id="licor-no" class="radio-pink">
+                            <span class="text-gray-700">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="space-y-3 fade-in-up">
+                    <label class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-female mr-2"></i>¿Has tenido abortos?
+                    </label>
+                    <div class="flex space-x-6">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="aborto" value="si" id="aborto-si" class="radio-pink">
+                            <span class="text-gray-700">Sí</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="aborto" value="no" checked id="aborto-no" class="radio-pink">
+                            <span class="text-gray-700">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="space-y-3 fade-in-up">
+                    <label class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-procedures mr-2"></i>¿Te han hecho legrados?
+                    </label>
+                    <div class="flex space-x-6">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="legrado" value="si" id="legrado-si" class="radio-pink">
+                            <span class="text-gray-700">Sí</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="legrado" value="no" checked id="legrado-no" class="radio-pink">
+                            <span class="text-gray-700">No</span>
+                        </label>
+                    </div>
+                </div>
             </div>
+
+            <!-- Sección Cuenta -->
             <div class="space-y-4 border-t border-pink-200 pt-6">
-                <div class="flex items-center space-x-3 mb-4"> <div class="section-icon"> <i class="fas fa-user-cog"></i> </div> <h2 class="text-xl font-semibold text-pink-700">Información de Cuenta</h2> </div>
-                <div class="space-y-2 fade-in-up"> <label for="email" class="block text-pink-700 font-medium text-sm"> <i class="fas fa-envelope mr-2"></i>Correo Electrónico </label> <input type="email" id="email" readonly class="input-pink w-full px-4 py-3 focus:outline-none bg-gray-200 cursor-not-allowed"> </div>
-                <div class="space-y-2 fade-in-up"> <label for="password" class="block text-pink-700 font-medium text-sm"> <i class="fas fa-lock mr-2"></i>Nueva Contraseña </label> <input type="password" id="password" class="input-pink w-full px-4 py-3 focus:outline-none" placeholder="Dejar en blanco para no cambiar"> </div>
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="section-icon">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-pink-700">Información de Cuenta</h2>
+                </div>
+
+                <div class="space-y-2 fade-in-up">
+                    <label for="email" class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-envelope mr-2"></i>Correo Electrónico
+                    </label>
+                    <input type="email" id="email" readonly
+                           class="input-pink w-full px-4 py-3 focus:outline-none bg-gray-50">
+                </div>
+
+                <div class="space-y-2 fade-in-up">
+                    <label for="password" class="block text-pink-700 font-medium text-sm">
+                        <i class="fas fa-lock mr-2"></i>Nueva Contraseña
+                    </label>
+                    <input type="password" id="password"
+                           class="input-pink w-full px-4 py-3 focus:outline-none"
+                           placeholder="Dejar en blanco para no cambiar">
+                </div>
             </div>
-            <div class="flex flex-col sm:flex-row-reverse gap-3 pt-6 fade-in-up">
-                 <button type="submit" class="btn-pink px-6 py-4 w-full sm:w-auto font-medium text-lg flex-grow"> <i class="fas fa-save mr-2"></i>Guardar Cambios </button>
-                 <button type="button" id="cancelButton" class="btn-outline-pink px-6 py-4 w-full sm:w-auto font-medium"> <i class="fas fa-arrow-left mr-2"></i>Cancelar y Volver </button>
+
+            <!-- Botones -->
+            <div class="flex flex-col space-y-3 pt-6 fade-in-up">
+                <button type="submit" class="btn-pink px-6 py-4 w-full font-medium text-lg">
+                    <i class="fas fa-save mr-2"></i>Guardar Cambios
+                </button>
+                <button type="button" class="btn-outline-pink px-6 py-4 w-full font-medium">
+                    <i class="fas fa-times mr-2"></i>Cancelar
+                </button>
             </div>
         </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- ======================================================== -->
-    <!-- SCRIPT REVISADO, MEJORADO Y A PRUEBA DE ERRORES -->
-    <!-- ======================================================== -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // --- 1. CONFIGURACIÓN Y ELEMENTOS ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Configuración Supabase
             const SUPABASE_URL = 'https://wrtdzisgzsouqldbdhug.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIZ1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndydGR6aXNnenNvdXFsZGJkaHVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4ODc5ODEsImV4cCI6MjA2NTQ2Mzk4MX0.rpbuwf-UKH23bcRkOwlENjJIbzVkthAibkkVSfkBixQ';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndydGR6aXNnenNvdXFsZGJkaHVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4ODc5ODEsImV4cCI6MjA2NTQ2Mzk4MX0.rpbuwf-UKH23bcRkOwlENjJIbzVkthAibkkVSfkBixQ';
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            const ui = {
-                form: document.getElementById('personalInfoForm'),
-                itsDetails: document.getElementById('its-details'),
-                sustanciasDetails: document.getElementById('sustancias-details'),
-                modal: document.getElementById('messageModal'),
-                modalTitle: document.getElementById('modalTitle'),
-                modalMessage: document.getElementById('modalMessage'),
-                modalIcon: document.getElementById('modalIcon'),
-                modalCloseBtn: document.getElementById('modalClose'),
-                emailField: document.getElementById('email'),
-                passwordField: document.getElementById('password'),
-                cancelButton: document.getElementById('cancelButton'),
+            // Elementos DOM
+            const form = document.getElementById('personalInfoForm');
+            const itsDetails = document.getElementById('its-details');
+            const sustanciasDetails = document.getElementById('sustancias-details');
+            const modal = document.getElementById('messageModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalCloseBtn = document.getElementById('modalClose');
+
+            // Funciones del modal
+            const showMessage = (title, message) => {
+                modalTitle.textContent = title;
+                modalMessage.textContent = message;
+                modal.classList.remove('opacity-0', 'invisible');
+                modal.querySelector('.modal-pink').classList.remove('scale-75');
+                modal.querySelector('.modal-pink').classList.add('scale-100');
             };
 
-            // --- 2. FUNCIONES DE UI ---
-            const showMessage = (title, message, isError = false) => {
-                ui.modalTitle.textContent = title;
-                ui.modalMessage.textContent = message;
-                ui.modalIcon.className = isError ? 'fas fa-exclamation-triangle' : 'fas fa-heart';
-                ui.modal.classList.remove('opacity-0', 'invisible');
-                ui.modal.querySelector('.modal-pink').classList.remove('scale-75');
-            };
             const hideMessage = () => {
-                ui.modal.classList.add('opacity-0', 'invisible');
-                ui.modal.querySelector('.modal-pink').classList.add('scale-75');
+                modal.classList.add('opacity-0', 'invisible');
+                modal.querySelector('.modal-pink').classList.add('scale-75');
+                modal.querySelector('.modal-pink').classList.remove('scale-100');
             };
-            const setLoading = (isLoading) => ui.form.classList.toggle('loading', isLoading);
 
-            // --- 3. LÓGICA DE LA APLICACIÓN ---
+            modalCloseBtn.addEventListener('click', hideMessage);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) hideMessage();
+            });
 
-            /**
-             * Carga datos del perfil en el formulario.
-             */
-            const loadUserProfile = async (user) => {
-                const { data: profile, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-                
-                if (error && error.code !== 'PGRST116') { // PGRST116 es el error "no rows found", que es normal para un usuario nuevo
-                    throw new Error("No se pudo cargar tu perfil. Revisa tus Políticas de Seguridad (RLS) en Supabase. Error: " + error.message);
-                }
-                
-                ui.emailField.value = user.email || '';
-                
-                if (profile) {
+            // Cargar datos del usuario
+            const loadUserData = async (user) => {
+                try {
+                    const { data: profile, error } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', user.id)
+                        .single();
+
+                    if (error) {
+                        console.error('Error loading profile:', error);
+                        return;
+                    }
+                    
+                    if (!profile) return;
+
+                    // Cargar datos en el formulario
                     document.getElementById('age').value = profile.age || '';
-                    document.querySelector('input[name="its"][value="' + (profile.has_its ? 'si' : 'no') + '"]').checked = true;
-                    document.querySelector('input[name="pareja"][value="' + (profile.has_partner ? 'si' : 'no') + '"]').checked = true;
-                    document.querySelector('input[name="hijos"][value="' + (profile.has_children ? 'si' : 'no') + '"]').checked = true;
-                    document.querySelector('input[name="sustancias"][value="' + (profile.uses_substances ? 'si' : 'no') + '"]').checked = true;
-                    document.querySelector('input[name="trabajo-sexual"][value="' + (profile.is_sex_worker ? 'si' : 'no') + '"]').checked = true;
-                    document.querySelector('input[name="licor"][value="' + (profile.drinks_liquor ? 'si' : 'no') + '"]').checked = true;
-                    document.querySelector('input[name="aborto"][value="' + (profile.had_abortion ? 'si' : 'no') + '"]').checked = true;
-                    document.querySelector('input[name="legrado"][value="' + (profile.had_curettage ? 'si' : 'no') + '"]').checked = true;
+                    document.getElementById('email').value = profile.email || '';
+                    
+                    const setRadioValue = (name, value) => {
+                        const selector = `input[name="${name}"][value="${value ? 'si' : 'no'}"]`;
+                        const radio = document.querySelector(selector);
+                        if (radio) radio.checked = true;
+                    };
 
+                    setRadioValue('its', profile.has_its);
                     if (profile.has_its) {
-                        ui.itsDetails.classList.remove('hidden');
+                        itsDetails.classList.remove('hidden');
                         document.getElementById('its-type').value = profile.its_type || '';
                         document.getElementById('its-medication').value = profile.its_medication || '';
                     }
-                    if (profile.uses_substances && Array.isArray(profile.substances_used)) {
-                        ui.sustanciasDetails.classList.remove('hidden');
+
+                    setRadioValue('pareja', profile.has_partner);
+                    setRadioValue('hijos', profile.has_children);
+                    setRadioValue('sustancias', profile.uses_substances);
+                    
+                    if (profile.uses_substances && profile.substances_used) {
+                        sustanciasDetails.classList.remove('hidden');
                         profile.substances_used.forEach(sustancia => {
                             const checkbox = document.querySelector(`input[name="sustancia"][value="${sustancia}"]`);
                             if (checkbox) checkbox.checked = true;
                         });
                     }
+                    
+                    setRadioValue('trabajo-sexual', profile.is_sex_worker);
+                    setRadioValue('licor', profile.drinks_liquor);
+                    setRadioValue('aborto', profile.had_abortion);
+                    setRadioValue('legrado', profile.had_curettage);
+                } catch (error) {
+                    console.error('Error cargando datos:', error);
                 }
-                 // Disparamos un evento 'change' para que las secciones condicionales se actualicen al cargar
-                ui.form.dispatchEvent(new Event('change'));
             };
 
-            /**
-             * Guarda los cambios del formulario en Supabase.
-             */
-            const handleFormSubmit = async (event) => {
-                event.preventDefault();
-                setLoading(true);
-
+            // Eventos de radio buttons
+            document.getElementById('its-si').addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    itsDetails.classList.remove('hidden');
+                }
+            });
+            
+            document.getElementById('its-no').addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    itsDetails.classList.add('hidden');
+                }
+            });
+            
+            document.getElementById('sustancias-si').addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    sustanciasDetails.classList.remove('hidden');
+                }
+            });
+            
+            document.getElementById('sustancias-no').addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    sustanciasDetails.classList.add('hidden');
+                }
+            });
+            
+            // Envío del formulario
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Mostrar estado de carga
+                form.classList.add('loading');
+                
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
-                    if (!user) throw new Error('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.');
+                    if (!user) {
+                        showMessage('Error', 'Debes iniciar sesión para guardar los cambios.');
+                        return;
+                    }
 
-                    const ageValue = document.getElementById('age').value;
+                    const substances = Array.from(document.querySelectorAll('input[name="sustancia"]:checked')).map(el => el.value);
+
                     const updates = {
-                        id: user.id,
-                        age: ageValue ? parseInt(ageValue, 10) : null,
-                        has_its: document.querySelector('input[name="its"]:checked').value === 'si',
-                        its_type: document.querySelector('input[name="its"]:checked').value === 'si' ? document.getElementById('its-type').value : null,
-                        its_medication: document.querySelector('input[name="its"]:checked').value === 'si' ? document.getElementById('its-medication').value : null,
-                        has_partner: document.querySelector('input[name="pareja"]:checked').value === 'si',
-                        has_children: document.querySelector('input[name="hijos"]:checked').value === 'si',
-                        uses_substances: document.querySelector('input[name="sustancias"]:checked').value === 'si',
-                        substances_used: Array.from(document.querySelectorAll('input[name="sustancia"]:checked')).map(el => el.value),
-                        is_sex_worker: document.querySelector('input[name="trabajo-sexual"]:checked').value === 'si',
-                        drinks_liquor: document.querySelector('input[name="licor"]:checked').value === 'si',
-                        had_abortion: document.querySelector('input[name="aborto"]:checked').value === 'si',
-                        had_curettage: document.querySelector('input[name="legrado"]:checked').value === 'si',
-                        updated_at: new Date().toISOString(),
+                        age: document.getElementById('age').value || null,
+                        has_its: document.getElementById('its-si').checked,
+                        its_type: document.getElementById('its-si').checked ? document.getElementById('its-type').value : null,
+                        its_medication: document.getElementById('its-si').checked ? document.getElementById('its-medication').value : null,
+                        has_partner: document.querySelector('input[name="pareja"][value="si"]').checked,
+                        has_children: document.querySelector('input[name="hijos"][value="si"]').checked,
+                        uses_substances: document.getElementById('sustancias-si').checked,
+                        substances_used: substances.length > 0 ? substances : null,
+                        is_sex_worker: document.querySelector('input[name="trabajo-sexual"][value="si"]').checked,
+                        drinks_liquor: document.querySelector('input[name="licor"][value="si"]').checked,
+                        had_abortion: document.querySelector('input[name="aborto"][value="si"]').checked,
+                        had_curettage: document.querySelector('input[name="legrado"][value="si"]').checked,
+                        updated_at: new Date()
                     };
 
-                    const { error } = await supabase.from('profiles').upsert(updates, { onConflict: 'id' });
-                    if (error) throw error;
+                    const { error } = await supabase
+                        .from('profiles')
+                        .update(updates)
+                        .eq('id', user.id);
                     
-                    if (ui.passwordField.value) {
-                        const { error: passwordError } = await supabase.auth.updateUser({ password: ui.passwordField.value });
-                        if (passwordError) throw new Error("Datos guardados, pero falló al actualizar contraseña: " + passwordError.message);
-                    }
-                    
-                    showMessage('¡Perfecto! 💕', 'Tu información ha sido actualizada. Serás redirigida en un momento.');
-                    setTimeout(() => {
-                        window.location.href = 'visor-de-perfil.html'; // Cambia 'visor-de-perfil.html' al nombre de tu página de visualización
-                    }, 2500);
-
-                } catch (error) {
-                    showMessage('Error al Guardar', error.message, true);
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            // --- 4. INICIALIZACIÓN ---
-            const initializePage = async () => {
-                ui.modalCloseBtn.addEventListener('click', hideMessage);
-                ui.cancelButton.addEventListener('click', () => window.history.back());
-                ui.form.addEventListener('submit', handleFormSubmit);
-                ui.form.addEventListener('change', (e) => {
-                    if (e.target.type === 'radio') {
-                        if (e.target.name === 'its') ui.itsDetails.classList.toggle('hidden', e.target.value === 'no');
-                        if (e.target.name === 'sustancias') ui.sustanciasDetails.classList.toggle('hidden', e.target.value === 'no');
-                    }
-                });
-
-                try {
-                    setLoading(true);
-                    const { data: { user } } = await supabase.auth.getUser();
-                    if (user) {
-                        await loadUserProfile(user);
+                    if (error) {
+                        showMessage('Error', 'No se pudieron guardar los cambios: ' + error.message);
                     } else {
-                        showMessage('Error de Sesión', 'Debes iniciar sesión para editar tu información.', true);
-                        ui.form.classList.add('opacity-50', 'pointer-events-none');
+                        showMessage('¡Perfecto! 💕', 'Tu información ha sido actualizada exitosamente. Serás redirigida al menú principal.');
+                        setTimeout(() => {
+                            window.location.href = 'menu.html';
+                        }, 2500);
                     }
                 } catch (error) {
-                    showMessage('Error Crítico', 'No se pudo verificar tu sesión: ' + error.message, true);
+                    showMessage('Error', 'Ocurrió un error inesperado: ' + error.message);
                 } finally {
-                    setLoading(false);
+                    form.classList.remove('loading');
                 }
-            };
+            });
 
-            initializePage();
+            // Carga inicial
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    await loadUserData(user);
+                } else {
+                    showMessage('Error de Sesión', 'Debes iniciar sesión para ver o editar tu información personal.');
+                }
+            } catch (error) {
+                showMessage('Error', 'No se pudo cargar la información del usuario.');
+            }
         });
     </script>
 </body>
 </html>
-
