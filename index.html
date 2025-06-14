@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sneyder Estudio - Cargando</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Exo 2', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Partículas de fondo */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(220, 38, 127, 0.3);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 3s; }
+        .particle:nth-child(5) { left: 60%; animation-delay: 1.5s; }
+        .particle:nth-child(6) { left: 70%; animation-delay: 2.5s; }
+        .particle:nth-child(7) { left: 80%; animation-delay: 0.5s; }
+        .particle:nth-child(8) { left: 90%; animation-delay: 3.5s; }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% { 
+                opacity: 1;
+                transform: translateY(90vh) scale(1);
+            }
+            90% { 
+                opacity: 1;
+                transform: translateY(-10vh) scale(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: translateY(-20vh) scale(0);
+            }
+        }
+
+        .loading-container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Gotita de sangre 3D */
+        .blood-drop {
+            width: 80px;
+            height: 100px;
+            margin: 0 auto 30px;
+            position: relative;
+            animation: dropFloat 3s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        .drop-main {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff1744 0%, #c62828 50%, #b71c1c 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            box-shadow: 
+                0 10px 20px rgba(255, 23, 68, 0.3),
+                inset -10px -10px 20px rgba(183, 28, 28, 0.3),
+                inset 10px 10px 20px rgba(255, 82, 82, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .drop-tail {
+            width: 30px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff1744 0%, #c62828 100%);
+            border-radius: 50% 0 50% 50%;
+            position: absolute;
+            bottom: -20px;
+            left: 25px;
+            transform: rotate(45deg);
+            box-shadow: 0 5px 15px rgba(255, 23, 68, 0.4);
+        }
+
+        .drop-highlight {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, transparent 70%);
+            border-radius: 50%;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes dropFloat {
+            0%, 100% { transform: translateY(0px) rotateX(0deg); }
+            50% { transform: translateY(-15px) rotateX(5deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Texto Sneyder Estudio */
+        .studio-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 
+                0 0 10px rgba(220, 38, 127, 0.8),
+                0 0 20px rgba(220, 38, 127, 0.6),
+                0 0 30px rgba(220, 38, 127, 0.4);
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            animation: textGlow 2s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        .studio-text::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #dc267f, #ff6b9d, #dc267f);
+            border-radius: 8px;
+            z-index: -1;
+            opacity: 0.3;
+            filter: blur(8px);
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes textGlow {
+            from { 
+                text-shadow: 
+                    0 0 10px rgba(220, 38, 127, 0.8),
+                    0 0 20px rgba(220, 38, 127, 0.6),
+                    0 0 30px rgba(220, 38, 127, 0.4);
+            }
+            to { 
+                text-shadow: 
+                    0 0 15px rgba(220, 38, 127, 1),
+                    0 0 25px rgba(220, 38, 127, 0.8),
+                    0 0 35px rgba(220, 38, 127, 0.6);
+            }
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Barra de progreso premium */
+        .progress-container {
+            width: 400px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.5),
+                0 2px 8px rgba(220, 38, 127, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, 
+                #ff1744 0%, 
+                #ff6b9d 25%, 
+                #dc267f 50%, 
+                #c2185b 75%, 
+                #ad1457 100%);
+            border-radius: 20px;
+            position: relative;
+            animation: progressFill 8s linear forwards;
+            box-shadow: 
+                0 0 20px rgba(220, 38, 127, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.4) 50%, 
+                transparent 100%);
+            animation: progressShine 2s ease-in-out infinite;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.8) 0%, 
+                rgba(255, 255, 255, 0.4) 50%, 
+                transparent 100%);
+            border-radius: 20px;
+        }
+
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        @keyframes progressShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Porcentaje de carga */
+        .progress-text {
+            color: #ffffff;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            font-weight: 400;
+            margin-top: 15px;
+            opacity: 0.8;
+            animation: progressCount 8s linear forwards;
+        }
+
+        .progress-text::after {
+            content: '0%';
+            animation: countUp 8s linear forwards;
+        }
+
+        @keyframes countUp {
+            0% { content: '0%'; }
+            12.5% { content: '12%'; }
+            25% { content: '25%'; }
+            37.5% { content: '37%'; }
+            50% { content: '50%'; }
+            62.5% { content: '62%'; }
+            75% { content: '75%'; }
+            87.5% { content: '87%'; }
+            100% { content: '100%'; }
+        }
+
+        /* Estado de carga */
+        .loading-status {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            margin-top: 20px;
+            animation: statusFade 2s ease-in-out infinite;
+        }
+
+        @keyframes statusFade {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Efectos de completado */
+        .complete {
+            animation: completePulse 0.5s ease-out;
+        }
+
+        @keyframes completePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .progress-container {
+                width: 300px;
+            }
+            
+            .studio-text {
+                font-size: 24px;
+            }
+            
+            .blood-drop {
+                width: 60px;
+                height: 80px;
+            }
+            
+            .drop-main {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Partículas de fondo -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="loading-container">
+        <!-- Gotita de sangre 3D -->
+        <div class="blood-drop">
+            <div class="drop-main">
+                <div class="drop-highlight"></div>
+            </div>
+            <div class="drop-tail"></div>
+        </div>
+
+        <!-- Texto Sneyder Estudio -->
+        <div class="studio-text">SNEYDER ESTUDIO</div>
+
+        <!-- Barra de progreso -->
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+
+        <!-- Porcentaje -->
+        <div class="progress-text"></div>
+
+        <!-- Estado de carga -->
+        <div class="loading-status">Inicializando sistema...</div>
+    </div>
+
+    <script>
+        // Cambiar el estado de carga
+        const statusMessages = [
+            'Inicializando sistema...',
+            'Cargando recursos...',
+            'Configurando entorno...',
+            'Preparando interfaz...',
+            'Finalizando carga...',
+            'Completado'
+        ];
+
+        let currentStatus = 0;
+        const statusElement = document.querySelector('.loading-status');
+
+        const statusInterval = setInterval(() => {
+            if (currentStatus < statusMessages.length - 1) {
+                currentStatus++;
+                statusElement.textContent = statusMessages[currentStatus];
+            }
+        }, 1600);
+
+        // Redirección automática después de 8 segundos
+        setTimeout(() => {
+            clearInterval(statusInterval);
+            document.querySelector('.loading-container').classList.add('complete');
+            statusElement.textContent = statusMessages[statusMessages.length - 1];
+            
+            // Redirección suave
+            setTimeout(() => {
+                window.location.href = 'menu.html';
+            }, 500);
+        }, 8000);
+
+        // Efecto de sonido simulado (visual)
+        document.addEventListener('DOMContentLoaded', () => {
+            const progressBar = document.querySelector('.progress-bar');
+            
+            setTimeout(() => {
+                progressBar.style.transform = 'scaleX(1)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

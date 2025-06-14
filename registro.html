@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro del Ciclo Menstrual</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        body { 
+            margin: 0; 
+            overflow-x: hidden; 
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 25%, #ffd1e8 50%, #ffb3d9 75%, #ff99cc 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: #4a4a4a;
+            min-height: 100vh;
+        }
+        
+        .particles-container { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            pointer-events: none; 
+            z-index: 1; 
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .particle.heart {
+            width: 20px;
+            height: 18px;
+            background: #ff69b4;
+            border-radius: 50px 50px 0 0;
+            transform: rotate(-45deg);
+            opacity: 0.6;
+        }
+        
+        .particle.heart:before,
+        .particle.heart:after {
+            content: '';
+            width: 20px;
+            height: 18px;
+            position: absolute;
+            left: 10px;
+            top: 0;
+            background: #ff69b4;
+            border-radius: 50px 50px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+        
+        .particle.heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+        
+        .particle.flower {
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #ffb3d9, #ff69b4);
+        }
+        
+        .particle.circle {
+            background: radial-gradient(circle, rgba(255, 105, 180, 0.8), rgba(255, 182, 193, 0.4));
+        }
+        
+        .particle.bubble {
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 105, 180, 0.3));
+            border: 1px solid rgba(255, 105, 180, 0.2);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            25% { transform: translateY(-20px) rotate(90deg); opacity: 0.9; }
+            50% { transform: translateY(-10px) rotate(180deg); opacity: 0.5; }
+            75% { transform: translateY(-30px) rotate(270deg); opacity: 0.8; }
+        }
+        
+        .ui-container { 
+            position: relative; 
+            z-index: 10; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            width: 100%; 
+            padding: 20px;
+        }
+        
+        .form-container { 
+            width: 100%; 
+            max-width: 600px; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+        
+        .cycle-form { 
+            background: rgba(255, 255, 255, 0.95); 
+            border: 2px solid rgba(255, 105, 180, 0.3); 
+            padding: 40px; 
+            border-radius: 25px; 
+            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.15); 
+            backdrop-filter: blur(10px); 
+        }
+        
+        .cycle-form h2 { 
+            text-align: center; 
+            color: #d63384; 
+            margin-top: 0; 
+            margin-bottom: 30px; 
+            font-size: 2rem; 
+            font-weight: 600;
+        }
+        
+        .input-group { 
+            margin-bottom: 25px; 
+        }
+        
+        .input-group label, .radio-group-label { 
+            display: block; 
+            margin-bottom: 10px; 
+            color: #6b46c1; 
+            font-weight: 600; 
+        }
+        
+        .input-group input[type="text"], 
+        .input-group input[type="date"], 
+        .input-group textarea { 
+            width: 100%; 
+            padding: 15px; 
+            background: rgba(255, 240, 248, 0.8); 
+            border: 2px solid #ffb3d9; 
+            border-radius: 15px; 
+            color: #4a4a4a; 
+            font-size: 1rem; 
+            box-sizing: border-box; 
+            transition: all 0.3s ease; 
+        }
+        
+        .input-group input:focus, 
+        .input-group textarea:focus { 
+            outline: none; 
+            border-color: #ff69b4; 
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.3); 
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .checkbox-container { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            background: rgba(255, 240, 248, 0.5);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #ffb3d9;
+        }
+        
+        .checkbox-container input[type="checkbox"] { 
+            width: 1.5em; 
+            height: 1.5em; 
+            accent-color: #ff69b4; 
+        }
+        
+        .checkbox-container input[type="text"] { 
+            flex-grow: 1; 
+            margin: 0;
+        }
+        
+        .radio-options { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+        }
+        
+        .radio-option { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: rgba(255, 240, 248, 0.6);
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid #ffb3d9;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-option:hover {
+            background: rgba(255, 105, 180, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .radio-option input[type="radio"], 
+        .radio-option input[type="checkbox"] { 
+            width: 1.2em; 
+            height: 1.2em; 
+            accent-color: #ff69b4; 
+        }
+        
+        .conditional-section { 
+            display: none; 
+            border-left: 4px solid #ff69b4; 
+            background: rgba(255, 240, 248, 0.3);
+            padding: 20px; 
+            margin-top: 20px; 
+            border-radius: 0 15px 15px 0;
+        }
+        
+        .button-group { 
+            display: flex; 
+            gap: 20px; 
+            margin-top: 40px; 
+        }
+        
+        .form-button { 
+            flex-grow: 1; 
+            padding: 18px; 
+            border-radius: 25px; 
+            border: none;
+            color: white; 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .form-button.primary { 
+            background: linear-gradient(135deg, #ff69b4, #d63384); 
+        }
+        
+        .form-button.secondary { 
+            background: linear-gradient(135deg, #6c757d, #495057); 
+        }
+        
+        .form-button:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .form-button:disabled { 
+            background: #adb5bd; 
+            cursor: not-allowed; 
+            transform: none; 
+        }
+        
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0, 0, 0, 0.6); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.3s ease; 
+        }
+        
+        .modal-overlay.visible { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        
+        .modal-content { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            border: 3px solid #ff69b4; 
+            box-shadow: 0 25px 50px rgba(255, 105, 180, 0.3); 
+            text-align: center; 
+            width: 90%; 
+            max-width: 450px; 
+            transform: scale(0.8); 
+            transition: transform 0.3s ease; 
+        }
+        
+        .modal-overlay.visible .modal-content { 
+            transform: scale(1); 
+        }
+        
+        .modal-title { 
+            color: #d63384; 
+            font-size: 1.8rem; 
+            margin-top: 0; 
+            font-weight: 600;
+        }
+        
+        .modal-message { 
+            margin: 25px 0; 
+            font-size: 1.1rem; 
+            line-height: 1.6; 
+            color: #4a4a4a;
+        }
+        
+        .modal-close-btn { 
+            background: linear-gradient(135deg, #ff69b4, #d63384); 
+            color: white; 
+            border: none; 
+            border-radius: 25px; 
+            padding: 15px 40px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 105, 180, 0.3);
+        }
+
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff69b4, transparent);
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles-container" id="particles"></div>
+    
+    <div id="messageModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle" class="modal-title"></h3>
+            <p id="modalMessage" class="modal-message"></p>
+            <button id="modalClose" class="modal-close-btn">
+                <i class="fas fa-heart"></i> Entendido
+            </button>
+        </div>
+    </div>
+    
+    <div class="ui-container">
+        <div class="form-container">
+            <form class="cycle-form" id="cycleForm">
+                <h2><i class="fas fa-venus"></i> Registro de Ciclo</h2>
+                
+                <div class="input-group checkbox-container">
+                    <input type="checkbox" id="start-period-check">
+                    <label for="start-period-check"><i class="fas fa-calendar-day"></i> Inicio del periodo:</label>
+                    <input type="text" id="start-period-date" readonly placeholder="Marcar para fijar fecha">
+                </div>
+                
+                <div class="input-group checkbox-container">
+                    <input type="checkbox" id="end-period-check">
+                    <label for="end-period-check"><i class="fas fa-calendar-check"></i> Finalización del periodo:</label>
+                    <input type="text" id="end-period-date" readonly placeholder="Marcar para fijar fecha">
+                </div>
+                
+                <hr>
+                
+                <div class="input-group">
+                    <label class="radio-group-label"><i class="fas fa-tint"></i> Flujo:</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="flujo" value="ligero">
+                            <span>Ligero</span>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="flujo" value="normal" checked>
+                            <span>Normal</span>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="flujo" value="abundante">
+                            <span>Abundante</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label"><i class="fas fa-shield-alt"></i> ¿Qué método de protección usas?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="proteccion" value="toallas" checked>
+                            <span>Toallas</span>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="proteccion" value="tampones">
+                            <span>Tampones</span>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="proteccion" value="copa">
+                            <span>Copa</span>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="proteccion" value="ropa-interior">
+                            <span>Ropa interior menstrual</span>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="proteccion" value="diafragma">
+                            <span>Diafragma</span>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="proteccion" value="otro">
+                            <span>Otro</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label"><i class="fas fa-heart"></i> ¿Has tenido relaciones sexuales recientemente?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="sexo_reciente" id="sexo-reciente-si" value="si">
+                            <span>Sí</span>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="sexo_reciente" id="sexo-reciente-no" value="no" checked>
+                            <span>No</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="sexual-activity-details" class="conditional-section">
+                    <div class="input-group">
+                        <label for="last-sex-date"><i class="fas fa-calendar-alt"></i> Fecha de la última relación:</label>
+                        <input type="date" id="last-sex-date">
+                    </div>
+                    <div class="input-group">
+                        <label class="radio-group-label">¿Con cuántas parejas?</label>
+                        <div class="radio-options">
+                            <div class="radio-option">
+                                <input type="radio" name="num_parejas" value="1">
+                                <span>1</span>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="num_parejas" value="2">
+                                <span>2</span>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="num_parejas" value="3">
+                                <span>3</span>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="num_parejas" value="4">
+                                <span>4 o más</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="radio-group-label">Sexo de tu(s) pareja(s):</label>
+                        <div class="radio-options">
+                            <div class="radio-option">
+                                <input type="checkbox" name="sexo_pareja" value="hombre">
+                                <span>Hombre</span>
+                            </div>
+                            <div class="radio-option">
+                                <input type="checkbox" name="sexo_pareja" value="mujer">
+                                <span>Mujer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label"><i class="fas fa-exclamation-triangle"></i> ¿Sospechas de una infección vaginal?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="infeccion" id="infeccion-si" value="si">
+                            <span>Sí</span>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="infeccion" id="infeccion-no" value="no" checked>
+                            <span>No</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="infection-details" class="conditional-section">
+                    <div class="input-group">
+                        <label for="infection-symptoms"><i class="fas fa-notes-medical"></i> Describe tus síntomas y cualquier tratamiento que uses:</label>
+                        <textarea id="infection-symptoms" rows="3" placeholder="Ej: picazón, flujo inusual, mal olor..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="observaciones"><i class="fas fa-sticky-note"></i> Observaciones adicionales:</label>
+                    <textarea id="observaciones" rows="4" placeholder="Cualquier otro síntoma, estado de ánimo, etc."></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="form-button secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" id="save-button" class="form-button primary" disabled>
+                        <i class="fas fa-save"></i> Guardar Ciclo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Crear partículas flotantes
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Tipos de partículas
+                const types = ['circle', 'bubble', 'flower'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                particle.classList.add(type);
+                
+                // Tamaño aleatorio
+                const size = Math.random() * 30 + 10;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                // Posición inicial aleatoria
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                
+                // Duración de animación aleatoria
+                particle.style.animationDuration = (Math.random() * 4 + 3) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                
+                container.appendChild(particle);
+            }
+            
+            // Crear algunos corazones especiales
+            for (let i = 0; i < 8; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'particle heart';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.top = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                heart.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Crear partículas
+            createParticles();
+            
+            // --- CONEXIÓN A SUPABASE ---
+            const SUPABASE_URL = 'https://wrtdzisgzsouqldbdhug.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndydGR6aXNnenNvdXFsZGJkaHVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4ODc5ODEsImV4cCI6MjA2NTQ2Mzk4MX0.rpbuwf-UKH23bcRkOwlENjJIbzVkthAibkkVSfkBixQ';
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            // --- ELEMENTOS DEL DOM ---
+            const cycleForm = document.getElementById('cycleForm');
+            const endCheck = document.getElementById('end-period-check');
+            const saveButton = document.getElementById('save-button');
+            const modal = document.getElementById('messageModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalCloseBtn = document.getElementById('modalClose');
+
+            let startDateISO = null;
+            let endDateISO = null;
+
+            // --- FUNCIONES ---
+            const showMessage = (title, message) => { 
+                modalTitle.textContent = title; 
+                modalMessage.textContent = message; 
+                modal.classList.add('visible'); 
+            };
+            const hideMessage = () => modal.classList.remove('visible');
+            modalCloseBtn.addEventListener('click', hideMessage);
+
+            const getLocalizedDate = () => new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const getISODate = () => new Date().toISOString().split('T')[0];
+
+            // --- LÓGICA DE EVENTOS ---
+            document.getElementById('start-period-check').addEventListener('change', (e) => {
+                const input = document.getElementById('start-period-date');
+                if (e.target.checked) {
+                    input.value = getLocalizedDate();
+                    startDateISO = getISODate();
+                } else {
+                    input.value = '';
+                    startDateISO = null;
+                }
+            });
+            
+            endCheck.addEventListener('change', () => {
+                const input = document.getElementById('end-period-date');
+                if (endCheck.checked) {
+                    input.value = getLocalizedDate();
+                    endDateISO = getISODate();
+                    saveButton.disabled = false;
+                } else {
+                    input.value = '';
+                    endDateISO = null;
+                    saveButton.disabled = true;
+                }
+            });
+            
+            document.getElementById('sexo-reciente-si').addEventListener('change', () => {
+                document.getElementById('sexual-activity-details').style.display = 'block';
+            });
+            
+            document.getElementById('sexo-reciente-no').addEventListener('change', () => {
+                document.getElementById('sexual-activity-details').style.display = 'none';
+            });
+            
+            document.getElementById('infeccion-si').addEventListener('change', () => {
+                document.getElementById('infection-details').style.display = 'block';
+            });
+            
+            document.getElementById('infeccion-no').addEventListener('change', () => {
+                document.getElementById('infection-details').style.display = 'none';
+            });
+
+            // --- LÓGICA DE GUARDADO EN SUPABASE ---
+            cycleForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!endCheck.checked) {
+                    showMessage('Error de Validación', 'Debes marcar la casilla de "Finalización del periodo" para poder guardar el registro.');
+                    return;
+                }
+
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    showMessage('Error de Sesión', 'Debes iniciar sesión para guardar un registro. Vuelve al menú y usa el icono de la tuerca.');
+                    return;
+                }
+
+                // Recopilar datos del formulario
+                const had_sex = document.getElementById('sexo-reciente-si').checked;
+                const partner_gender = Array.from(document.querySelectorAll('input[name="sexo_pareja"]:checked')).map(el => el.value);
+
+                const cycleData = {
+                    user_id: user.id,
+                    start_date: startDateISO,
+                    end_date: endDateISO,
+                    flow_type: document.querySelector('input[name="flujo"]:checked').value,
+                    protection_method: document.querySelector('input[name="proteccion"]:checked').value,
+                    had_sex: had_sex,
+                    last_sex_date: had_sex ? document.getElementById('last-sex-date').value || null : null,
+                    partner_count: had_sex ? document.querySelector('input[name="num_parejas"]:checked')?.value : null,
+                    partner_gender: had_sex ? partner_gender : null,
+                    has_infection_symptoms: document.getElementById('infeccion-si').checked,
+                    infection_symptoms: document.getElementById('infeccion-si').checked ? document.getElementById('infection-symptoms').value : null,
+                    observations: document.getElementById('observaciones').value,
+                };
+
+                // Insertar en Supabase
+                const { error } = await supabase.from('cycles').insert([cycleData]);
+                
+                if (error) {
+                    showMessage('Error al Guardar', `Hubo un problema: ${error.message}`);
+                } else {
+                    showMessage('¡Éxito!', 'Tu registro del ciclo ha sido guardado. Serás redirigida al menú principal.');
+                    setTimeout(() => {
+                        window.location.href = 'menu.html';
+                    }, 2500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

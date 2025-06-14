@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información Personal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, 
+                rgba(255, 182, 193, 0.3) 0%, 
+                rgba(255, 105, 180, 0.2) 25%, 
+                rgba(221, 160, 221, 0.3) 50%, 
+                rgba(255, 192, 203, 0.2) 75%, 
+                rgba(255, 182, 193, 0.3) 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Particles */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 182, 193, 0.6);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { width: 8px; height: 8px; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 12px; height: 12px; left: 20%; animation-delay: 1s; }
+        .particle:nth-child(3) { width: 6px; height: 6px; left: 30%; animation-delay: 2s; }
+        .particle:nth-child(4) { width: 10px; height: 10px; left: 40%; animation-delay: 3s; }
+        .particle:nth-child(5) { width: 14px; height: 14px; left: 50%; animation-delay: 4s; }
+        .particle:nth-child(6) { width: 8px; height: 8px; left: 60%; animation-delay: 5s; }
+        .particle:nth-child(7) { width: 12px; height: 12px; left: 70%; animation-delay: 0.5s; }
+        .particle:nth-child(8) { width: 6px; height: 6px; left: 80%; animation-delay: 1.5s; }
+        .particle:nth-child(9) { width: 10px; height: 10px; left: 90%; animation-delay: 2.5s; }
+        .particle:nth-child(10) { width: 8px; height: 8px; left: 15%; animation-delay: 3.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Animated Waves */
+        .wave-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 182, 193, 0.3), rgba(255, 105, 180, 0.2));
+            border-radius: 50%;
+            animation: wave 4s ease-in-out infinite;
+        }
+
+        .wave:nth-child(2) {
+            animation-delay: 2s;
+            background: linear-gradient(45deg, rgba(221, 160, 221, 0.3), rgba(255, 192, 203, 0.2));
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            50% { transform: translateX(-50%) rotate(180deg); }
+        }
+
+        /* Main Content */
+        .ui-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .top-bar {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .top-bar h2 {
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-shadow: 0 0 20px rgba(255, 182, 193, 0.8);
+            margin: 0;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 700px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .personal-info-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .personal-info-form:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 80px rgba(255, 182, 193, 0.2);
+        }
+
+        .form-section-title {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 182, 193, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .form-section-title::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff69b4, transparent);
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group label,
+        .radio-group-label,
+        .checkbox-group-label {
+            display: block;
+            margin-bottom: 10px;
+            color: #fff;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .input-group input[type="text"],
+        .input-group input[type="number"],
+        .input-group input[type="email"],
+        .input-group input[type="password"] {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 182, 193, 0.3);
+            border-radius: 15px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff69b4;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .radio-options,
+        .checkbox-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .radio-option:hover,
+        .checkbox-option:hover {
+            transform: scale(1.05);
+        }
+
+        .radio-option input[type="radio"],
+        .checkbox-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #ff69b4;
+            cursor: pointer;
+        }
+
+        .conditional-section {
+            display: none;
+            border-left: 3px solid #ff69b4;
+            padding-left: 20px;
+            margin-top: 20px;
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .form-button {
+            flex: 1;
+            padding: 18px 30px;
+            border-radius: 25px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-button.primary {
+            background: linear-gradient(45deg, #ff6b9d, #ff8fab);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+        }
+
+        .form-button.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
+        }
+
+        .form-button.secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255, 182, 193, 0.5);
+        }
+
+        .form-button.secondary:hover {
+            background: rgba(255, 182, 193, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .form-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .form-button:hover::before {
+            left: 100%;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            color: #ff69b4;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .modal-message {
+            color: #fff;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .modal-close-btn {
+            background: linear-gradient(45deg, #ff6b9d, #ff8fab);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .personal-info-form {
+                padding: 30px 20px;
+            }
+            
+            .radio-options,
+            .checkbox-options {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .form-button {
+                width: 100%;
+            }
+        }
+
+        /* Pulsing Effect for Interactive Elements */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 105, 180, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0); }
+        }
+
+        .form-button.primary {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <div class="floating-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="wave-container">
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <div id="messageModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle" class="modal-title"></h3>
+            <p id="modalMessage" class="modal-message"></p>
+            <button id="modalClose" class="modal-close-btn">Entendido</button>
+        </div>
+    </div>
+
+    <div class="ui-container">
+        <div class="top-bar">
+            <h2>Información Personal</h2>
+        </div>
+        
+        <div class="form-container">
+            <form class="personal-info-form" id="personalInfoForm">
+                <h3 class="form-section-title">Salud y Estilo de Vida</h3>
+                
+                <div class="input-group">
+                    <label for="age">Edad</label>
+                    <input type="number" id="age" min="12" max="100" placeholder="Ingresa tu edad">
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label">¿Tienes alguna ITS?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="its" id="its-si" value="si">
+                            <label for="its-si">Sí</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="its" id="its-no" value="no" checked>
+                            <label for="its-no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="its-details" class="conditional-section">
+                    <div class="input-group">
+                        <label for="its-type">¿Cuál?</label>
+                        <input type="text" id="its-type" placeholder="Especifica el tipo">
+                    </div>
+                    <div class="input-group">
+                        <label for="its-medication">¿Medicamento?</label>
+                        <input type="text" id="its-medication" placeholder="Medicamento actual">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label">¿Tienes pareja?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="pareja" value="si" id="pareja-si">
+                            <label for="pareja-si">Sí</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="pareja" value="no" checked id="pareja-no">
+                            <label for="pareja-no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label">¿Tienes hijos?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="hijos" value="si" id="hijos-si">
+                            <label for="hijos-si">Sí</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="hijos" value="no" checked id="hijos-no">
+                            <label for="hijos-no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label">¿Consumes sustancias?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="sustancias" id="sustancias-si" value="si">
+                            <label for="sustancias-si">Sí</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="sustancias" id="sustancias-no" value="no" checked>
+                            <label for="sustancias-no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="sustancias-details" class="conditional-section">
+                    <div class="input-group">
+                        <label class="checkbox-group-label">Marca las que consumes:</label>
+                        <div class="checkbox-options">
+                            <div class="checkbox-option">
+                                <input type="checkbox" name="sustancia" value="marihuana" id="marihuana">
+                                <label for="marihuana">Marihuana</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" name="sustancia" value="hongos" id="hongos">
+                                <label for="hongos">Hongos</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" name="sustancia" value="lsd" id="lsd">
+                                <label for="lsd">LSD</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" name="sustancia" value="mdma" id="mdma">
+                                <label for="mdma">MDMA</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" name="sustancia" value="cocaina" id="cocaina">
+                                <label for="cocaina">Cocaína</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" name="sustancia" value="ketamina" id="ketamina">
+                                <label for="ketamina">Ketamina</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" name="sustancia" value="ayahuasca" id="ayahuasca">
+                                <label for="ayahuasca">Ayahuasca</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label">¿Trabajo sexual?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="trabajo-sexual" value="si" id="trabajo-sexual-si">
+                            <label for="trabajo-sexual-si">Sí</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="trabajo-sexual" value="no" checked id="trabajo-sexual-no">
+                            <label for="trabajo-sexual-no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label">¿Consumes licor?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="licor" value="si" id="licor-si">
+                            <label for="licor-si">Sí</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="licor" value="no" checked id="licor-no">
+                            <label for="licor-no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label">¿Has tenido abortos?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="aborto" value="si" id="aborto-si">
+                            <label for="aborto-si">Sí</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="aborto" value="no" checked id="aborto-no">
+                            <label for="aborto-no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label class="radio-group-label">¿Te han hecho legrados?</label>
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" name="legrado" value="si" id="legrado-si">
+                            <label for="legrado-si">Sí</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="legrado" value="no" checked id="legrado-no">
+                            <label for="legrado-no">No</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 class="form-section-title">Información de la Cuenta</h3>
+                
+                <div class="input-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" readonly>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Nueva Contraseña</label>
+                    <input type="password" id="password" placeholder="Dejar en blanco para no cambiar">
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="form-button secondary">Cancelar</button>
+                    <button type="submit" class="form-button primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // --- CONEXIÓN A SUPABASE ---
+            const SUPABASE_URL = 'https://wrtdzisgzsouqldbdhug.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndydGR6aXNnenNvdXFsZGJkaHVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4ODc5ODEsImV4cCI6MjA2NTQ2Mzk4MX0.rpbuwf-UKH23bcRkOwlENjJIbzVkthAibkkVSfkBixQ';
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            // --- ELEMENTOS DEL DOM ---
+            const form = document.getElementById('personalInfoForm');
+            const itsDetails = document.getElementById('its-details');
+            const sustanciasDetails = document.getElementById('sustancias-details');
+            const modal = document.getElementById('messageModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalCloseBtn = document.getElementById('modalClose');
+
+            // --- FUNCIONES ---
+            const showMessage = (title, message) => {
+                modalTitle.textContent = title;
+                modalMessage.textContent = message;
+                modal.classList.add('visible');
+            };
+
+            const hideMessage = () => modal.classList.remove('visible');
+            modalCloseBtn.addEventListener('click', hideMessage);
+
+            const loadUserData = async (user) => {
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error) {
+                    console.error('Error loading profile:', error);
+                    return;
+                }
+                
+                if (!profile) return;
+
+                // Cargar datos en el formulario
+                document.getElementById('age').value = profile.age || '';
+                document.getElementById('email').value = profile.email || '';
+                
+                const setRadioValue = (name, value) => {
+                    const selector = `input[name="${name}"][value="${value ? 'si' : 'no'}"]`;
+                    const radio = document.querySelector(selector);
+                    if (radio) radio.checked = true;
+                };
+
+                setRadioValue('its', profile.has_its);
+                if (profile.has_its) {
+                    itsDetails.style.display = 'block';
+                    document.getElementById('its-type').value = profile.its_type || '';
+                    document.getElementById('its-medication').value = profile.its_medication || '';
+                }
+
+                setRadioValue('pareja', profile.has_partner);
+                setRadioValue('hijos', profile.has_children);
+                setRadioValue('sustancias', profile.uses_substances);
+                
+                if (profile.uses_substances && profile.substances_used) {
+                    sustanciasDetails.style.display = 'block';
+                    profile.substances_used.forEach(sustancia => {
+                        const checkbox = document.querySelector(`input[name="sustancia"][value="${sustancia}"]`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+                
+                setRadioValue('trabajo-sexual', profile.is_sex_worker);
+                setRadioValue('licor', profile.drinks_liquor);
+                setRadioValue('aborto', profile.had_abortion);
+                setRadioValue('legrado', profile.had_curettage);
+            };
+
+            // --- LÓGICA DE EVENTOS ---
+            document.getElementById('its-si').addEventListener('change', (e) => {
+                itsDetails.style.display = e.target.checked ? 'block' : 'none';
+            });
+            
+            document.getElementById('its-no').addEventListener('change', (e) => {
+                itsDetails.style.display = e.target.checked ? 'none' : 'block';
+            });
+            
+            document.getElementById('sustancias-si').addEventListener('change', (e) => {
+                sustanciasDetails.style.display = e.target.checked ? 'block' : 'none';
+            });
+            
+            document.getElementById('sustancias-no').addEventListener('change', (e) => {
+                sustanciasDetails.style.display = e.target.checked ? 'none' : 'block';
+            });
+            
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    showMessage('Error', 'Debes iniciar sesión para guardar.');
+                    return;
+                }
+
+                const substances = Array.from(document.querySelectorAll('input[name="sustancia"]:checked')).map(el => el.value);
+
+                const updates = {
+                    age: document.getElementById('age').value || null,
+                    has_its: document.getElementById('its-si').checked,
+                    its_type: document.getElementById('its-si').checked ? document.getElementById('its-type').value : null,
+                    its_medication: document.getElementById('its-si').checked ? document.getElementById('its-medication').value : null,
+                    has_partner: document.querySelector('input[name="pareja"][value="si"]').checked,
+                    has_children: document.querySelector('input[name="hijos"][value="si"]').checked,
+                    uses_substances: document.getElementById('sustancias-si').checked,
+                    substances_used: substances.length > 0 ? substances : null,
+                    is_sex_worker: document.querySelector('input[name="trabajo-sexual"][value="si"]').checked,
+                    drinks_liquor: document.querySelector('input[name="licor"][value="si"]').checked,
+                    had_abortion: document.querySelector('input[name="aborto"][value="si"]').checked,
+                    had_curettage: document.querySelector('input[name="legrado"][value="si"]').checked,
+                    updated_at: new Date()
+                };
+
+                const { error } = await supabase
+                    .from('profiles')
+                    .update(updates)
+                    .eq('id', user.id);
+                
+                if (error) {
+                    showMessage('Error', 'No se pudieron guardar los cambios: ' + error.message);
+                } else {
+                    showMessage('¡Éxito!', 'Tu información ha sido actualizada. Serás redirigida al menú.');
+                    setTimeout(() => {
+                        window.location.href = 'menu.html';
+                    }, 2500);
+                }
+            });
+
+            // --- CARGA INICIAL ---
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                loadUserData(user);
+            } else {
+                showMessage('Error de Sesión', 'Debes iniciar sesión para ver o editar tu información.');
+            }
+        });
+    </script>
+</body>
+</html>
+

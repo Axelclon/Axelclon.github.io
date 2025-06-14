@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Información Personal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos base */
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #ffeef7 0%, #f0e6ff 25%, #ffe0f0 50%, #f5e6ff 75%, #fff0f8 100%);
+            font-family: 'Poppins', sans-serif;
+            color: #4a4a4a;
+            min-height: 100vh;
+        }
+        
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.7;
+        }
+        
+        .ui-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            width: 100%;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(255, 182, 193, 0.3);
+        }
+        
+        .top-bar-title {
+            flex: 1;
+            text-align: center;
+            color: #d63384;
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 0 0 20px rgba(214, 51, 132, 0.3);
+            padding-left: 44px;
+            background: linear-gradient(45deg, #d63384, #e91e63, #ff69b4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .edit-icon-link {
+            width: 44px;
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .edit-icon {
+            fill: #e91e63;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 0 10px rgba(233, 30, 99, 0.3));
+        }
+        
+        .edit-icon:hover {
+            fill: #ff69b4;
+            transform: scale(1.2) rotate(10deg);
+            filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.5));
+        }
+        
+        .info-container {
+            width: 100%;
+            max-width: 700px;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 182, 193, 0.3);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 
+                0 20px 40px rgba(255, 182, 193, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff69b4, transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .info-section-title {
+            color: #d63384;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(214, 51, 132, 0.2);
+            font-family: 'Dancing Script', cursive;
+            position: relative;
+        }
+        
+        .info-section-title:first-of-type {
+            margin-top: 0;
+        }
+        
+        .info-section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, #d63384, #ff69b4);
+            border-radius: 1px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .info-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 182, 193, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.15);
+            border-color: rgba(255, 105, 180, 0.4);
+        }
+        
+        .info-item:hover::before {
+            left: 100%;
+        }
+        
+        .info-item strong {
+            display: block;
+            color: #e91e63;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .info-item span {
+            font-size: 1.1rem;
+            word-wrap: break-word;
+            color: #555;
+            font-weight: 400;
+        }
+        
+        .loading-text {
+            text-align: center;
+            color: #d63384;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .error-text {
+            text-align: center;
+            color: #dc3545;
+            font-size: 1.1rem;
+        }
+        
+        .no-info-text {
+            text-align: center;
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        .no-info-text a {
+            color: #e91e63;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .no-info-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Estilos específicos para campos de cuenta */
+        .account-info .info-item {
+            background: rgba(255, 240, 245, 0.2);
+            border: 1px solid rgba(233, 30, 99, 0.3);
+        }
+        
+        .account-info .info-item strong {
+            color: #c2185b;
+        }
+        
+        .password-field {
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(233, 30, 99, 0.2);
+            display: inline-block;
+            min-width: 120px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="space-canvas"></canvas>
+
+    <div class="ui-container">
+        <div class="top-bar">
+            <div style="width: 44px;"></div>
+            <h2 class="top-bar-title">Mi Información Personal</h2>
+            <a href="informasion-personal.html" class="edit-icon-link">
+                <svg class="edit-icon" viewBox="0 0 24 24">
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                </svg>
+            </a>
+        </div>
+
+        <div class="info-container">
+            <div class="info-card" id="userInfoCard">
+                <p class="loading-text">Cargando información...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // --- CONEXIÓN A SUPABASE ---
+            const SUPABASE_URL = 'https://wrtdzisgzsouqldbdhug.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndydGR6aXNnenNvdXFsZGJkaHVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4ODc5ODEsImV4cCI6MjA2NTQ2Mzk4MX0.rpbuwf-UKH23bcRkOwlENjJIbzVkthAibkkVSfkBixQ';
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            const userInfoCard = document.getElementById('userInfoCard');
+
+            // --- FUNCIÓN PARA CARGAR Y MOSTRAR DATOS ---
+            const displayUserData = async (user) => {
+                try {
+                    const { data: profile, error } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', user.id)
+                        .single();
+
+                    if (error) {
+                        console.error('Error fetching profile:', error);
+                        userInfoCard.innerHTML = `<p class="error-text">No se pudo cargar tu perfil. Intenta de nuevo.</p>`;
+                        return;
+                    }
+                    
+                    if (!profile) {
+                        userInfoCard.innerHTML = `<p class="no-info-text">Aún no has completado tu perfil.</p>`;
+                        return;
+                    }
+
+                    const formatBool = (value) => value ? 'Sí' : 'No';
+                    const orNA = (value) => value || 'N/A';
+                    const substances = (Array.isArray(profile.substances_used) && profile.substances_used.length > 0) 
+                        ? profile.substances_used.join(', ') 
+                        : 'Ninguna';
+
+                    // Obtener el correo del usuario autenticado
+                    const userEmail = user.email || 'No disponible';
+                    
+                    // Intentar obtener la contraseña almacenada (si existe en el perfil)
+                    const userPassword = profile.password || profile.user_password || 'No disponible';
+
+                    userInfoCard.innerHTML = `
+                        <h3 class="info-section-title">🌸 Salud y Estilo de Vida</h3>
+                        <div class="info-grid">
+                            <div class="info-item"><strong>Edad</strong><span>${orNA(profile.age)}</span></div>
+                            <div class="info-item"><strong>Pareja Actual</strong><span>${formatBool(profile.has_partner)}</span></div>
+                            <div class="info-item"><strong>Hijos</strong><span>${formatBool(profile.has_children)}</span></div>
+                            <div class="info-item"><strong>Consume Licor</strong><span>${formatBool(profile.drinks_liquor)}</span></div>
+                            <div class="info-item"><strong>Ha tenido abortos</strong><span>${formatBool(profile.had_abortion)}</span></div>
+                            <div class="info-item"><strong>Le han hecho legrados</strong><span>${formatBool(profile.had_curettage)}</span></div>
+                            <div class="info-item"><strong>Trabajo Sexual</strong><span>${formatBool(profile.is_sex_worker)}</span></div>
+                            <div class="info-item"><strong>Tiene ITS</strong><span>${formatBool(profile.has_its)}</span></div>
+                        </div>
+
+                        ${profile.has_its ? `
+                        <div class="info-grid" style="margin-top: 20px;">
+                            <div class="info-item"><strong>Tipo de ITS</strong><span>${orNA(profile.its_type)}</span></div>
+                            <div class="info-item"><strong>Medicamento ITS</strong><span>${orNA(profile.its_medication)}</span></div>
+                        </div>` : ''}
+
+                        <div class="info-grid" style="margin-top: 20px;">
+                            <div class="info-item"><strong>Consume Sustancias</strong><span>${formatBool(profile.uses_substances)}</span></div>
+                            ${profile.uses_substances ? `<div class="info-item"><strong>Sustancias</strong><span>${substances}</span></div>` : ''}
+                        </div>
+
+                        <h3 class="info-section-title">💕 Información de la Cuenta</h3>
+                        <div class="info-grid account-info">
+                            <div class="info-item">
+                                <strong>Correo Electrónico</strong>
+                                <span>${userEmail}</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Contraseña</strong>
+                                <span class="password-field">${userPassword}</span>
+                            </div>
+                        </div>
+                    `;
+                } catch (error) {
+                    console.error('Error general:', error);
+                    userInfoCard.innerHTML = `<p class="error-text">Error al cargar la información. Por favor intenta de nuevo.</p>`;
+                }
+            };
+            
+            // --- CARGA INICIAL ---
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+
+                if (user) {
+                    await displayUserData(user);
+                } else {
+                    userInfoCard.innerHTML = `<p class="no-info-text">Por favor, <a href="menu.html">inicia sesión</a> para ver tu información.</p>`;
+                }
+            } catch (error) {
+                console.error('Error de autenticación:', error);
+                userInfoCard.innerHTML = `<p class="error-text">Error de autenticación. Por favor intenta de nuevo.</p>`;
+            }
+        });
+
+        // --- CÓDIGO DE THREE.JS PARA EL FONDO ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.z = 5;
+        
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('space-canvas'), 
+            alpha: true,
+            antialias: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        
+        let stars, galaxies;
+        const starVertices = [], galaxyVertices = [];
+        
+        // Crear estrellas con colores más suaves
+        for (let i = 0; i < 8000; i++) {
+            starVertices.push(
+                THREE.MathUtils.randFloatSpread(2000),
+                THREE.MathUtils.randFloatSpread(2000),
+                THREE.MathUtils.randFloatSpread(2000)
+            );
+        }
+        
+        const starsGeometry = new THREE.BufferGeometry();
+        starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+        stars = new THREE.Points(starsGeometry, new THREE.PointsMaterial({ 
+            color: 0xffb6c1, 
+            size: 0.8,
+            transparent: true,
+            opacity: 0.7
+        }));
+        scene.add(stars);
+        
+        // Crear galaxias con colores rosados
+        for (let i = 0; i < 30; i++) {
+            galaxyVertices.push(
+                THREE.MathUtils.randFloatSpread(2000),
+                THREE.MathUtils.randFloatSpread(2000),
+                THREE.MathUtils.randFloat(-1000, 1000)
+            );
+        }
+        
+        const galaxyGeometry = new THREE.BufferGeometry();
+        galaxyGeometry.setAttribute('position', new THREE.Float32BufferAttribute(galaxyVertices, 3));
+        galaxies = new THREE.Points(galaxyGeometry, new THREE.PointsMaterial({ 
+            size: 12, 
+            map: createGalaxyTexture(), 
+            transparent: true, 
+            blending: THREE.AdditiveBlending,
+            opacity: 0.6
+        }));
+        scene.add(galaxies);
+        
+        function createGalaxyTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+            gradient.addColorStop(0, 'rgba(255,182,193,1)');
+            gradient.addColorStop(0.2, 'rgba(255,192,203,0.8)');
+            gradient.addColorStop(0.4, 'rgba(255,105,180,0.6)');
+            gradient.addColorStop(0.6, 'rgba(221,160,221,0.4)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 128, 128);
+            return new THREE.CanvasTexture(canvas);
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            stars.rotation.x += 0.0001;
+            stars.rotation.y += 0.0002;
+            galaxies.rotation.x += 0.0001;
+            galaxies.rotation.y += 0.0002;
+            
+            stars.position.z += 0.3;
+            if (stars.position.z > 1000) stars.position.z = -1000;
+            
+            galaxies.position.z += 0.3;
+            if (galaxies.position.z > 1000) galaxies.position.z = -1000;
+            
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        animate();
+    </script>
+</body>
+</html>
+
