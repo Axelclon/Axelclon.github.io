@@ -4,430 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Mi Información Personal</title>
+    <!-- Tus estilos y librerías - Se han mantenido intactos, están perfectos -->
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #ffeef7 0%, #ffe0f0 50%, #fff0f8 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-            color: #4a4a4a;
-        }
-
-        /* Animated Background */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(45deg, 
-                rgba(255, 182, 193, 0.3) 0%, 
-                rgba(255, 105, 180, 0.2) 25%, 
-                rgba(221, 160, 221, 0.3) 50%, 
-                rgba(255, 192, 203, 0.2) 75%, 
-                rgba(255, 182, 193, 0.3) 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 8s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Floating Hearts */
-        .floating-hearts {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .heart {
-            position: absolute;
-            color: rgba(255, 105, 180, 0.6);
-            font-size: 12px;
-            animation: floatHeart 6s ease-in-out infinite;
-        }
-
-        .heart:nth-child(1) { left: 10%; animation-delay: 0s; }
-        .heart:nth-child(2) { left: 20%; animation-delay: 1s; font-size: 16px; }
-        .heart:nth-child(3) { left: 30%; animation-delay: 2s; font-size: 10px; }
-        .heart:nth-child(4) { left: 40%; animation-delay: 3s; font-size: 14px; }
-        .heart:nth-child(5) { left: 50%; animation-delay: 4s; font-size: 18px; }
-        .heart:nth-child(6) { left: 60%; animation-delay: 5s; font-size: 12px; }
-        .heart:nth-child(7) { left: 70%; animation-delay: 0.5s; font-size: 16px; }
-        .heart:nth-child(8) { left: 80%; animation-delay: 1.5s; font-size: 10px; }
-        .heart:nth-child(9) { left: 90%; animation-delay: 2.5s; font-size: 14px; }
-        .heart:nth-child(10) { left: 15%; animation-delay: 3.5s; font-size: 12px; }
-
-        @keyframes floatHeart {
-            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-50px) rotate(360deg); opacity: 0; }
-        }
-
-        /* Main Container */
-        .ui-container {
-            position: relative;
-            z-index: 10;
-            min-height: 100vh;
-            padding: 0;
-        }
-
-        /* Top Bar */
-        .top-bar {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            border-bottom: 2px solid rgba(255, 182, 193, 0.3);
-            padding: 20px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .top-bar-title {
-            flex: 1;
-            text-align: center;
-            color: #d63384;
-            font-size: 1.8rem;
-            font-weight: 700;
-            font-family: 'Dancing Script', cursive;
-            text-shadow: 0 0 20px rgba(214, 51, 132, 0.3);
-            background: linear-gradient(45deg, #d63384, #e91e63, #ff69b4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-left: 44px;
-        }
-
-        .edit-icon-link {
-            width: 44px;
-            height: 44px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(255, 105, 180, 0.1);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .edit-icon-link:hover {
-            background: rgba(255, 105, 180, 0.2);
-            transform: scale(1.1);
-        }
-
-        .edit-icon {
-            color: #e91e63;
-            font-size: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .edit-icon-link:hover .edit-icon {
-            color: #ff69b4;
-            transform: rotate(10deg);
-        }
-
-        /* Content Container */
-        .info-container {
-            padding: 20px 15px;
-        }
-
-        .info-card {
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 182, 193, 0.3);
-            border-radius: 25px;
-            padding: 25px 20px;
-            box-shadow: 
-                0 20px 40px rgba(255, 182, 193, 0.2),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(20px);
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .info-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #ff69b4, transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* Section Titles */
-        .info-section-title {
-            color: #d63384;
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin: 25px 0 20px 0;
-            padding-bottom: 12px;
-            border-bottom: 2px solid rgba(214, 51, 132, 0.2);
-            font-family: 'Dancing Script', cursive;
-            position: relative;
-            text-align: center;
-        }
-
-        .info-section-title:first-of-type {
-            margin-top: 0;
-        }
-
-        .info-section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 2px;
-            background: linear-gradient(90deg, #d63384, #ff69b4);
-            border-radius: 1px;
-        }
-
-        /* Info Grid - Mobile First */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .info-item {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 182, 193, 0.2);
-            padding: 18px 15px;
-            border-radius: 15px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .info-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .info-item:active {
-            transform: scale(0.98);
-            background: rgba(255, 182, 193, 0.1);
-        }
-
-        .info-item:active::before {
-            left: 100%;
-        }
-
-        .info-item strong {
-            display: block;
-            color: #e91e63;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-
-        .info-item span {
-            font-size: 1rem;
-            word-wrap: break-word;
-            color: #555;
-            font-weight: 400;
-            line-height: 1.4;
-        }
-
-        /* Account Info Special Styling */
-        .account-info .info-item {
-            background: rgba(255, 240, 245, 0.2);
-            border: 1px solid rgba(233, 30, 99, 0.3);
-        }
-
-        .account-info .info-item strong {
-            color: #c2185b;
-        }
-
-        .password-field {
-            font-family: 'Courier New', monospace;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(233, 30, 99, 0.2);
-            display: inline-block;
-            min-width: 100px;
-            font-size: 0.9rem;
-        }
-
-        /* Status Messages */
-        .loading-text {
-            text-align: center;
-            color: #d63384;
-            font-size: 1.1rem;
-            font-weight: 500;
-            padding: 40px 20px;
-        }
-
-        .error-text {
-            text-align: center;
-            color: #dc3545;
-            font-size: 1rem;
-            padding: 40px 20px;
-        }
-
-        .no-info-text {
-            text-align: center;
-            color: #6c757d;
-            font-size: 1rem;
-            padding: 40px 20px;
-            line-height: 1.6;
-        }
-
-        .no-info-text a {
-            color: #e91e63;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .no-info-text a:hover {
-            text-decoration: underline;
-        }
-
-        /* Loading Animation */
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(214, 51, 132, 0.3);
-            border-radius: 50%;
-            border-top-color: #d63384;
-            animation: spin 1s ease-in-out infinite;
-            margin-left: 10px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Pulse Effect for Interactive Elements */
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 105, 180, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0); }
-        }
-
-        .edit-icon-link {
-            animation: pulse 2s infinite;
-        }
-
-        /* Responsive adjustments for very small screens */
-        @media (max-width: 360px) {
-            .top-bar {
-                padding: 15px 10px;
-            }
-            
-            .top-bar-title {
-                font-size: 1.5rem;
-            }
-            
-            .info-container {
-                padding: 15px 10px;
-            }
-            
-            .info-card {
-                padding: 20px 15px;
-            }
-        }
-
-        /* Larger mobile screens */
-        @media (min-width: 480px) {
-            .info-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 18px;
-            }
-            
-            .info-item {
-                padding: 20px 18px;
-            }
-        }
-
-        /* Tablet size - still mobile-focused */
-        @media (min-width: 768px) {
-            .top-bar {
-                padding: 25px 20px;
-            }
-            
-            .top-bar-title {
-                font-size: 2rem;
-            }
-            
-            .info-container {
-                padding: 30px 20px;
-                max-width: 600px;
-                margin: 0 auto;
-            }
-            
-            .info-card {
-                padding: 35px 30px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #ffeef7 0%, #ffe0f0 50%, #fff0f8 100%); min-height: 100vh; overflow-x: hidden; position: relative; color: #4a4a4a; }
+        .animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(45deg, rgba(255, 182, 193, 0.3) 0%, rgba(255, 105, 180, 0.2) 25%, rgba(221, 160, 221, 0.3) 50%, rgba(255, 192, 203, 0.2) 75%, rgba(255, 182, 193, 0.3) 100%); background-size: 400% 400%; animation: gradientShift 8s ease infinite; }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .floating-hearts { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .heart { position: absolute; color: rgba(255, 105, 180, 0.6); font-size: 12px; animation: floatHeart 6s ease-in-out infinite; }
+        .heart:nth-child(1) { left: 10%; animation-delay: 0s; } .heart:nth-child(2) { left: 20%; animation-delay: 1s; font-size: 16px; } .heart:nth-child(3) { left: 30%; animation-delay: 2s; font-size: 10px; } .heart:nth-child(4) { left: 40%; animation-delay: 3s; font-size: 14px; } .heart:nth-child(5) { left: 50%; animation-delay: 4s; font-size: 18px; } .heart:nth-child(6) { left: 60%; animation-delay: 5s; font-size: 12px; } .heart:nth-child(7) { left: 70%; animation-delay: 0.5s; font-size: 16px; } .heart:nth-child(8) { left: 80%; animation-delay: 1.5s; font-size: 10px; } .heart:nth-child(9) { left: 90%; animation-delay: 2.5s; font-size: 14px; } .heart:nth-child(10) { left: 15%; animation-delay: 3.5s; font-size: 12px; }
+        @keyframes floatHeart { 0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-50px) rotate(360deg); opacity: 0; } }
+        .ui-container { position: relative; z-index: 10; min-height: 100vh; padding: 0; }
+        .top-bar { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); border-bottom: 2px solid rgba(255, 182, 193, 0.3); padding: 20px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .top-bar-title { flex: 1; text-align: center; color: #d63384; font-size: 1.8rem; font-weight: 700; font-family: 'Dancing Script', cursive; text-shadow: 0 0 20px rgba(214, 51, 132, 0.3); background: linear-gradient(45deg, #d63384, #e91e63, #ff69b4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-left: 44px; }
+        .edit-icon-link { width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; background: rgba(255, 105, 180, 0.1); border-radius: 50%; transition: all 0.3s ease; animation: pulse 2s infinite; }
+        .edit-icon-link:hover { background: rgba(255, 105, 180, 0.2); transform: scale(1.1); }
+        .edit-icon { color: #e91e63; font-size: 20px; transition: all 0.3s ease; }
+        .edit-icon-link:hover .edit-icon { color: #ff69b4; transform: rotate(10deg); }
+        .info-container { padding: 20px 15px; }
+        .info-card { background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 182, 193, 0.3); border-radius: 25px; padding: 25px 20px; box-shadow: 0 20px 40px rgba(255, 182, 193, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); position: relative; overflow: hidden; animation: fadeInUp 0.8s ease-out; }
+        @keyframes fadeInUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .info-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, #ff69b4, transparent); animation: shimmer 3s infinite; }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .info-section-title { color: #d63384; font-size: 1.4rem; font-weight: 600; margin: 25px 0 20px 0; padding-bottom: 12px; border-bottom: 2px solid rgba(214, 51, 132, 0.2); font-family: 'Dancing Script', cursive; position: relative; text-align: center; }
+        .info-section-title:first-of-type { margin-top: 0; }
+        .info-section-title::after { content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); width: 60px; height: 2px; background: linear-gradient(90deg, #d63384, #ff69b4); border-radius: 1px; }
+        .info-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; }
+        .info-item { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 182, 193, 0.2); padding: 18px 15px; border-radius: 15px; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .info-item::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent); transition: left 0.5s; }
+        .info-item:active { transform: scale(0.98); background: rgba(255, 182, 193, 0.1); }
+        .info-item:active::before { left: 100%; }
+        .info-item strong { display: block; color: #e91e63; margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .info-item span { font-size: 1rem; word-wrap: break-word; color: #555; font-weight: 400; line-height: 1.4; }
+        .account-info .info-item { background: rgba(255, 240, 245, 0.2); border: 1px solid rgba(233, 30, 99, 0.3); }
+        .account-info .info-item strong { color: #c2185b; }
+        .password-field { font-family: 'Courier New', monospace; background: rgba(255, 255, 255, 0.1); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(233, 30, 99, 0.2); display: inline-block; min-width: 100px; font-size: 0.9rem; }
+        .status-message { text-align: center; color: #6c757d; font-size: 1rem; padding: 40px 20px; line-height: 1.6; }
+        .status-message i { font-size: 2rem; color: #ff69b4; margin-bottom: 15px; display: block; }
+        .status-message.error { color: #dc3545; }
+        .status-message.error i { color: #dc3545; }
+        .status-message a { color: #e91e63; text-decoration: none; font-weight: 600; }
+        .status-message a:hover { text-decoration: underline; }
+        .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(214, 51, 132, 0.3); border-radius: 50%; border-top-color: #d63384; animation: spin 1s ease-in-out infinite; margin-left: 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 105, 180, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0); } }
+        @media (max-width: 360px) { .top-bar { padding: 15px 10px; } .top-bar-title { font-size: 1.5rem; } .info-container { padding: 15px 10px; } .info-card { padding: 20px 15px; } }
+        @media (min-width: 480px) { .info-grid { grid-template-columns: 1fr 1fr; gap: 18px; } .info-item { padding: 20px 18px; } }
+        @media (min-width: 768px) { .top-bar { padding: 25px 20px; } .top-bar-title { font-size: 2rem; } .info-container { padding: 30px 20px; max-width: 600px; margin: 0 auto; } .info-card { padding: 35px 30px; } }
     </style>
 </head>
 <body>
     <div class="animated-bg"></div>
-    
-    <div class="floating-hearts">
-        <i class="fas fa-heart heart"></i>
-        <i class="fas fa-heart heart"></i>
-        <i class="fas fa-heart heart"></i>
-        <i class="fas fa-heart heart"></i>
-        <i class="fas fa-heart heart"></i>
-        <i class="fas fa-heart heart"></i>
-        <i class="fas fa-heart heart"></i>
-        <i class="fas fa-heart heart"></i>
-        <i class="fas fa-heart heart"></i>
-        <i class="fas fa-heart heart"></i>
-    </div>
+    <div class="floating-hearts"> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> <i class="fas fa-heart heart"></i> </div>
 
     <div class="ui-container">
         <div class="top-bar">
-            <div style="width: 44px;"></div>
+            <div style="width: 44px;"></div> <!-- Espaciador para centrar el título -->
             <h2 class="top-bar-title">Mi Información</h2>
+            
+            <!-- ¡ATENCIÓN AQUÍ! -->
+            <!-- Asegúrate de que el nombre del archivo del formulario sea exactamente "informacion-personal.html" -->
             <a href="informacion-personal.html" class="edit-icon-link">
                 <i class="fas fa-edit edit-icon"></i>
             </a>
@@ -435,190 +73,125 @@
 
         <div class="info-container">
             <div class="info-card" id="userInfoCard">
-                <p class="loading-text">
-                    Cargando información...
-                    <span class="loading-spinner"></span>
-                </p>
+                <!-- El contenido se generará con JavaScript -->
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- ============================================= -->
+    <!-- SCRIPT CORREGIDO Y MEJORADO -->
+    <!-- ============================================= -->
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // --- CONEXIÓN A SUPABASE ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. CONFIGURACIÓN Y ELEMENTOS ---
             const SUPABASE_URL = 'https://wrtdzisgzsouqldbdhug.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndydGR6aXNnenNvdXFsZGJkaHVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4ODc5ODEsImV4cCI6MjA2NTQ2Mzk4MX0.rpbuwf-UKH23bcRkOwlENjJIbzVkthAibkkVSfkBixQ';
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
             const userInfoCard = document.getElementById('userInfoCard');
 
-            // --- FUNCIÓN PARA CARGAR Y MOSTRAR DATOS ---
-            const displayUserData = async (user) => {
+            // --- 2. FUNCIONES PARA MOSTRAR ESTADOS ---
+
+            // Muestra un mensaje de estado (cargando, error, etc.)
+            const renderStatus = (icon, message, isError = false) => {
+                const errorClass = isError ? 'error' : '';
+                userInfoCard.innerHTML = `
+                    <p class="status-message ${errorClass}">
+                        <i class="fas fa-${icon}"></i>
+                        ${message}
+                    </p>`;
+            };
+
+            // Dibuja el perfil del usuario con los datos obtenidos
+            const renderProfile = (profile, user) => {
+                const formatBool = (value) => value ? '💕 Sí' : '🚫 No';
+                const orNA = (value) => value || '❓ No especificado';
+                const substances = (Array.isArray(profile.substances_used) && profile.substances_used.length > 0) 
+                    ? profile.substances_used.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ') 
+                    : 'Ninguna';
+
+                // NUNCA muestres la contraseña. Es un riesgo de seguridad.
+                // Siempre muéstrala como oculta.
+                const userPasswordDisplay = '••••••••';
+
+                userInfoCard.innerHTML = `
+                    <h3 class="info-section-title">🌸 Salud y Estilo de Vida</h3>
+                    <div class="info-grid">
+                        <div class="info-item"><strong><i class="fas fa-birthday-cake"></i> Edad</strong><span>${orNA(profile.age)} años</span></div>
+                        <div class="info-item"><strong><i class="fas fa-heart"></i> Pareja Actual</strong><span>${formatBool(profile.has_partner)}</span></div>
+                        <div class="info-item"><strong><i class="fas fa-baby"></i> Hijos</strong><span>${formatBool(profile.has_children)}</span></div>
+                        <div class="info-item"><strong><i class="fas fa-wine-glass"></i> Consume Licor</strong><span>${formatBool(profile.drinks_liquor)}</span></div>
+                        <div class="info-item"><strong><i class="fas fa-procedures"></i> Abortos</strong><span>${formatBool(profile.had_abortion)}</span></div>
+                        <div class="info-item"><strong><i class="fas fa-hospital"></i> Legrados</strong><span>${formatBool(profile.had_curettage)}</span></div>
+                        <div class="info-item"><strong><i class="fas fa-briefcase"></i> Trabajo Sexual</strong><span>${formatBool(profile.is_sex_worker)}</span></div>
+                        <div class="info-item"><strong><i class="fas fa-virus"></i> Tiene ITS</strong><span>${formatBool(profile.has_its)}</span></div>
+                    </div>
+
+                    ${profile.has_its ? `
+                    <div class="info-grid" style="margin-top: 15px;">
+                        <div class="info-item"><strong><i class="fas fa-diagnoses"></i> Tipo de ITS</strong><span>${orNA(profile.its_type)}</span></div>
+                        <div class="info-item"><strong><i class="fas fa-pills"></i> Medicamento ITS</strong><span>${orNA(profile.its_medication)}</span></div>
+                    </div>` : ''}
+
+                    <div class="info-grid" style="margin-top: 15px;">
+                        <div class="info-item"><strong><i class="fas fa-smoking"></i> Consume Sustancias</strong><span>${formatBool(profile.uses_substances)}</span></div>
+                        ${profile.uses_substances ? `
+                        <div class="info-item"><strong><i class="fas fa-list"></i> Sustancias</strong><span>${substances}</span></div>` : ''}
+                    </div>
+
+                    <h3 class="info-section-title">💕 Información de la Cuenta</h3>
+                    <div class="info-grid account-info">
+                        <div class="info-item"><strong><i class="fas fa-envelope"></i> Correo</strong><span>${user.email || 'No disponible'}</span></div>
+                        <div class="info-item"><strong><i class="fas fa-key"></i> Contraseña</strong><span class="password-field">${userPasswordDisplay}</span></div>
+                    </div>`;
+            };
+
+            // --- 3. LÓGICA PRINCIPAL ---
+            const main = async () => {
+                renderStatus('sync-alt fa-spin', 'Cargando tu información...');
+                
                 try {
+                    // Primero, obtenemos la sesión del usuario
+                    const { data: { user } } = await supabase.auth.getUser();
+
+                    if (!user) {
+                        renderStatus('sign-in-alt', 'Debes <a href="menu.html">iniciar sesión</a> para ver tu perfil.', true);
+                        return;
+                    }
+                    
+                    // Si hay un usuario, buscamos su perfil en la tabla 'profiles'
                     const { data: profile, error } = await supabase
                         .from('profiles')
                         .select('*')
                         .eq('id', user.id)
                         .single();
 
-                    if (error) {
-                        console.error('Error fetching profile:', error);
-                        userInfoCard.innerHTML = `
-                            <p class="error-text">
-                                <i class="fas fa-exclamation-triangle"></i><br>
-                                No se pudo cargar tu perfil.<br>
-                                Intenta de nuevo más tarde.
-                            </p>`;
-                        return;
-                    }
-                    
-                    if (!profile) {
-                        userInfoCard.innerHTML = `
-                            <p class="no-info-text">
-                                <i class="fas fa-user-plus" style="font-size: 2rem; color: #ff69b4; margin-bottom: 15px;"></i><br>
-                                Aún no has completado tu perfil.<br>
-                                <a href="informacion-personal.html">¡Complétalo ahora!</a>
-                            </p>`;
-                        return;
+                    // Si hay un error al buscar el perfil (que no sea "no rows found")
+                    if (error && error.code !== 'PGRST116') {
+                       console.error('Supabase fetch error:', error);
+                       renderStatus('exclamation-triangle', 'No se pudo conectar con tu perfil. Revisa tus políticas de seguridad (RLS) en Supabase.', true);
+                       return;
                     }
 
-                    const formatBool = (value) => value ? '💕 Sí' : '🚫 No';
-                    const orNA = (value) => value || '❓ No especificado';
-                    const substances = (Array.isArray(profile.substances_used) && profile.substances_used.length > 0) 
-                        ? profile.substances_used.join(', ') 
-                        : '🚫 Ninguna';
+                    // Si se encuentra el perfil, lo mostramos
+                    if (profile) {
+                        renderProfile(profile, user);
+                    } else {
+                        // Si no se encuentra el perfil, invitamos a crearlo
+                        renderStatus('user-plus', 'Aún no has completado tu perfil.<br><a href="informacion-personal.html">¡Rellena tus datos ahora!</a>');
+                    }
 
-                    // Obtener el correo del usuario autenticado
-                    const userEmail = user.email || 'No disponible';
-                    
-                    // Intentar obtener la contraseña almacenada (si existe en el perfil)
-                    const userPassword = profile.password || profile.user_password || '••••••••';
-
-                    userInfoCard.innerHTML = `
-                        <h3 class="info-section-title">🌸 Salud y Estilo de Vida</h3>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <strong><i class="fas fa-birthday-cake"></i> Edad</strong>
-                                <span>${orNA(profile.age)} años</span>
-                            </div>
-                            <div class="info-item">
-                                <strong><i class="fas fa-heart"></i> Pareja Actual</strong>
-                                <span>${formatBool(profile.has_partner)}</span>
-                            </div>
-                            <div class="info-item">
-                                <strong><i class="fas fa-baby"></i> Hijos</strong>
-                                <span>${formatBool(profile.has_children)}</span>
-                            </div>
-                            <div class="info-item">
-                                <strong><i class="fas fa-wine-glass"></i> Consume Licor</strong>
-                                <span>${formatBool(profile.drinks_liquor)}</span>
-                            </div>
-                            <div class="info-item">
-                                <strong><i class="fas fa-procedures"></i> Ha tenido abortos</strong>
-                                <span>${formatBool(profile.had_abortion)}</span>
-                            </div>
-                            <div class="info-item">
-                                <strong><i class="fas fa-hospital"></i> Legrados</strong>
-                                <span>${formatBool(profile.had_curettage)}</span>
-                            </div>
-                            <div class="info-item">
-                                <strong><i class="fas fa-briefcase"></i> Trabajo Sexual</strong>
-                                <span>${formatBool(profile.is_sex_worker)}</span>
-                            </div>
-                            <div class="info-item">
-                                <strong><i class="fas fa-virus"></i> Tiene ITS</strong>
-                                <span>${formatBool(profile.has_its)}</span>
-                            </div>
-                        </div>
-
-                        ${profile.has_its ? `
-                        <div class="info-grid" style="margin-top: 20px;">
-                            <div class="info-item">
-                                <strong><i class="fas fa-diagnoses"></i> Tipo de ITS</strong>
-                                <span>${orNA(profile.its_type)}</span>
-                            </div>
-                            <div class="info-item">
-                                <strong><i class="fas fa-pills"></i> Medicamento ITS</strong>
-                                <span>${orNA(profile.its_medication)}</span>
-                            </div>
-                        </div>` : ''}
-
-                        <div class="info-grid" style="margin-top: 20px;">
-                            <div class="info-item">
-                                <strong><i class="fas fa-smoking"></i> Consume Sustancias</strong>
-                                <span>${formatBool(profile.uses_substances)}</span>
-                            </div>
-                            ${profile.uses_substances ? `
-                            <div class="info-item">
-                                <strong><i class="fas fa-list"></i> Sustancias</strong>
-                                <span>${substances}</span>
-                            </div>` : ''}
-                        </div>
-
-                        <h3 class="info-section-title">💕 Información de la Cuenta</h3>
-                        <div class="info-grid account-info">
-                            <div class="info-item">
-                                <strong><i class="fas fa-envelope"></i> Correo Electrónico</strong>
-                                <span>${userEmail}</span>
-                            </div>
-                            <div class="info-item">
-                                <strong><i class="fas fa-key"></i> Contraseña</strong>
-                                <span class="password-field">${userPassword}</span>
-                            </div>
-                        </div>
-                    `;
-                } catch (error) {
-                    console.error('Error general:', error);
-                    userInfoCard.innerHTML = `
-                        <p class="error-text">
-                            <i class="fas fa-exclamation-circle"></i><br>
-                            Error al cargar la información.<br>
-                            Por favor intenta de nuevo.
-                        </p>`;
+                } catch (e) {
+                    console.error('General error:', e);
+                    renderStatus('exclamation-circle', 'Ocurrió un error inesperado al cargar la página.', true);
                 }
             };
-            
-            // --- CARGA INICIAL ---
-            try {
-                const { data: { user } } = await supabase.auth.getUser();
 
-                if (user) {
-                    await displayUserData(user);
-                } else {
-                    userInfoCard.innerHTML = `
-                        <p class="no-info-text">
-                            <i class="fas fa-sign-in-alt" style="font-size: 2rem; color: #ff69b4; margin-bottom: 15px;"></i><br>
-                            Por favor, <a href="menu.html">inicia sesión</a><br>
-                            para ver tu información personal.
-                        </p>`;
-                }
-            } catch (error) {
-                console.error('Error de autenticación:', error);
-                userInfoCard.innerHTML = `
-                    <p class="error-text">
-                        <i class="fas fa-user-times"></i><br>
-                        Error de autenticación.<br>
-                        Por favor intenta de nuevo.
-                    </p>`;
-            }
-        });
-
-        // Add touch feedback for mobile
-        document.addEventListener('touchstart', function(e) {
-            if (e.target.closest('.info-item')) {
-                e.target.closest('.info-item').style.transform = 'scale(0.98)';
-            }
-        });
-
-        document.addEventListener('touchend', function(e) {
-            if (e.target.closest('.info-item')) {
-                setTimeout(() => {
-                    e.target.closest('.info-item').style.transform = 'scale(1)';
-                }, 150);
-            }
+            // Iniciar la carga de la página
+            main();
         });
     </script>
 </body>
 </html>
+
