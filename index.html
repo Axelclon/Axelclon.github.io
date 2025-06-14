@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sneyder Estudio - Cargando</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Interfaz Femenina Perfeccionada - Sneyder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -13,399 +14,681 @@
         }
 
         body {
-            height: 100vh;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Exo 2', sans-serif;
-            overflow: hidden;
+            margin: 0;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #fecfef 50%, #ff9a9e 75%, #fad0c4 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
             position: relative;
         }
 
-        /* Partículas de fondo */
-        .particles {
-            position: absolute;
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Elementos decorativos de fondo */
+        .decorative-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
+            pointer-events: none;
+            z-index: 1;
             overflow: hidden;
         }
 
-        .particle {
+        .floating-heart {
             position: absolute;
-            width: 3px;
-            height: 3px;
-            background: rgba(220, 38, 127, 0.3);
+            color: rgba(255, 182, 193, 0.6);
+            animation: floatHeart 8s infinite ease-in-out;
+            font-size: 20px;
+        }
+
+        .floating-flower {
+            position: absolute;
+            color: rgba(255, 105, 180, 0.5);
+            animation: floatFlower 12s infinite ease-in-out;
+            font-size: 25px;
+        }
+
+        .floating-star {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.7);
+            animation: floatStar 6s infinite ease-in-out;
+            font-size: 15px;
+        }
+
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-20px) rotate(10deg); opacity: 0.8; }
+        }
+
+        @keyframes floatFlower {
+            0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); opacity: 0.4; }
+            33% { transform: translateY(-15px) translateX(10px) rotate(120deg); opacity: 0.7; }
+            66% { transform: translateY(-10px) translateX(-10px) rotate(240deg); opacity: 0.6; }
+        }
+
+        @keyframes floatStar {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+        }
+
+        /* Burbujas brillantes */
+        .bubble {
+            position: absolute;
             border-radius: 50%;
-            animation: float 6s infinite ease-in-out;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,182,193,0.4) 70%, transparent 100%);
+            animation: bubble 10s infinite ease-in-out;
+            opacity: 0.6;
         }
 
-        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
-        .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
-        .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
-        .particle:nth-child(4) { left: 40%; animation-delay: 3s; }
-        .particle:nth-child(5) { left: 60%; animation-delay: 1.5s; }
-        .particle:nth-child(6) { left: 70%; animation-delay: 2.5s; }
-        .particle:nth-child(7) { left: 80%; animation-delay: 0.5s; }
-        .particle:nth-child(8) { left: 90%; animation-delay: 3.5s; }
-
-        @keyframes float {
-            0%, 100% { 
-                transform: translateY(100vh) scale(0);
-                opacity: 0;
-            }
-            10% { 
-                opacity: 1;
-                transform: translateY(90vh) scale(1);
-            }
-            90% { 
-                opacity: 1;
-                transform: translateY(-10vh) scale(1);
-            }
-            100% { 
-                opacity: 0;
-                transform: translateY(-20vh) scale(0);
-            }
+        @keyframes bubble {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100px) scale(1); opacity: 0; }
         }
 
-        .loading-container {
-            text-align: center;
+        .ui-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            color: white;
             z-index: 10;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            perspective: 1000px;
         }
 
-        /* Gotita de sangre 3D */
-        .blood-drop {
-            width: 80px;
-            height: 100px;
-            margin: 0 auto 30px;
-            position: relative;
-            animation: dropFloat 3s ease-in-out infinite;
-            transform-style: preserve-3d;
-        }
-
-        .drop-main {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #ff1744 0%, #c62828 50%, #b71c1c 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            position: relative;
-            box-shadow: 
-                0 10px 20px rgba(255, 23, 68, 0.3),
-                inset -10px -10px 20px rgba(183, 28, 28, 0.3),
-                inset 10px 10px 20px rgba(255, 82, 82, 0.3);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .drop-tail {
-            width: 30px;
-            height: 40px;
-            background: linear-gradient(135deg, #ff1744 0%, #c62828 100%);
-            border-radius: 50% 0 50% 50%;
-            position: absolute;
-            bottom: -20px;
-            left: 25px;
-            transform: rotate(45deg);
-            box-shadow: 0 5px 15px rgba(255, 23, 68, 0.4);
-        }
-
-        .drop-highlight {
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, transparent 70%);
-            border-radius: 50%;
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            animation: shimmer 2s ease-in-out infinite;
-        }
-
-        @keyframes dropFloat {
-            0%, 100% { transform: translateY(0px) rotateX(0deg); }
-            50% { transform: translateY(-15px) rotateX(5deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes shimmer {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
-        /* Texto Sneyder Estudio */
-        .studio-text {
-            font-family: 'Orbitron', monospace;
-            font-size: 28px;
-            font-weight: 700;
-            color: #ffffff;
-            text-shadow: 
-                0 0 10px rgba(220, 38, 127, 0.8),
-                0 0 20px rgba(220, 38, 127, 0.6),
-                0 0 30px rgba(220, 38, 127, 0.4);
-            margin-bottom: 40px;
-            letter-spacing: 2px;
-            animation: textGlow 2s ease-in-out infinite alternate;
-            position: relative;
-        }
-
-        .studio-text::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #dc267f, #ff6b9d, #dc267f);
-            border-radius: 8px;
-            z-index: -1;
-            opacity: 0.3;
-            filter: blur(8px);
-            animation: borderGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes textGlow {
-            from { 
-                text-shadow: 
-                    0 0 10px rgba(220, 38, 127, 0.8),
-                    0 0 20px rgba(220, 38, 127, 0.6),
-                    0 0 30px rgba(220, 38, 127, 0.4);
-            }
-            to { 
-                text-shadow: 
-                    0 0 15px rgba(220, 38, 127, 1),
-                    0 0 25px rgba(220, 38, 127, 0.8),
-                    0 0 35px rgba(220, 38, 127, 0.6);
-            }
-        }
-
-        @keyframes borderGlow {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
-        }
-
-        /* Barra de progreso premium */
-        .progress-container {
-            width: 400px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 
-                inset 0 2px 4px rgba(0, 0, 0, 0.5),
-                0 2px 8px rgba(220, 38, 127, 0.2);
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            width: 100%;
+            box-sizing: border-box;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, 
-                #ff1744 0%, 
-                #ff6b9d 25%, 
-                #dc267f 50%, 
-                #c2185b 75%, 
-                #ad1457 100%);
-            border-radius: 20px;
-            position: relative;
-            animation: progressFill 8s linear forwards;
+        .menu-text {
+            color: #ff1493;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            cursor: pointer;
+            flex: 1;
+            text-align: left;
+            text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .menu-text:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
+        }
+
+        .brand-name {
+            flex: 1;
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-top: 10px;
+            text-shadow: 
+                -2px -2px 0 #ff1493,
+                2px -2px 0 #ff1493,
+                -2px 2px 0 #ff1493,
+                2px 2px 0 #ff1493,
+                0 0 10px rgba(255,255,255,0.8),
+                0 0 20px rgba(255,105,180,0.7),
+                0 0 30px rgba(255,105,180,0.6);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: -2px -2px 0 #ff1493, 2px -2px 0 #ff1493, -2px 2px 0 #ff1493, 2px 2px 0 #ff1493, 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,105,180,0.7), 0 0 30px rgba(255,105,180,0.6); }
+            to { text-shadow: -2px -2px 0 #ff1493, 2px -2px 0 #ff1493, -2px 2px 0 #ff1493, 2px 2px 0 #ff1493, 0 0 15px rgba(255,255,255,1), 0 0 30px rgba(255,105,180,0.9), 0 0 40px rgba(255,105,180,0.8); }
+        }
+
+        .icon-group {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 25px;
+            flex: 1;
+        }
+
+        .icon {
+            width: 32px;
+            height: 32px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+        }
+
+        .icon:hover {
+            transform: scale(1.2) rotate(10deg);
+            color: #ff69b4;
+            filter: drop-shadow(0 0 15px rgba(255, 105, 180, 0.8));
+        }
+
+        .center-menu {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            padding: 40px 20px;
+        }
+
+        .menu-button {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #c71585 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 18px 45px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 280px;
+            text-align: center;
+            transition: all 0.4s ease;
             box-shadow: 
-                0 0 20px rgba(220, 38, 127, 0.6),
-                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+                0 8px 25px rgba(255, 105, 180, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
         }
 
-        .progress-bar::before {
+        .menu-button::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.4) 50%, 
-                transparent 100%);
-            animation: progressShine 2s ease-in-out infinite;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
         }
 
-        .progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 2px;
+        .menu-button:hover::before {
+            left: 100%;
+        }
+
+        .menu-button:hover {
+            transform: scale(1.08) translateY(-3px);
+            box-shadow: 
+                0 15px 35px rgba(255, 105, 180, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .menu-button i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Estilos para modales */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
             left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0.8) 0%, 
-                rgba(255, 255, 255, 0.4) 50%, 
-                transparent 100%);
-            border-radius: 20px;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
         }
 
-        @keyframes progressFill {
-            from { width: 0%; }
-            to { width: 100%; }
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
         }
 
-        @keyframes progressShine {
-            0% { left: -100%; }
-            100% { left: 100%; }
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.95) 0%, rgba(255, 105, 180, 0.95) 100%);
+            padding: 35px 40px;
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 25px 50px rgba(255, 105, 180, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            width: 90%;
+            max-width: 480px;
+            transform: scale(0.8) translateY(50px);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(20px);
         }
 
-        /* Porcentaje de carga */
-        .progress-text {
-            color: #ffffff;
-            font-family: 'Orbitron', monospace;
-            font-size: 14px;
-            font-weight: 400;
-            margin-top: 15px;
-            opacity: 0.8;
-            animation: progressCount 8s linear forwards;
+        .modal-overlay.visible .modal-content {
+            transform: scale(1) translateY(0);
         }
 
-        .progress-text::after {
-            content: '0%';
-            animation: countUp 8s linear forwards;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
         }
 
-        @keyframes countUp {
-            0% { content: '0%'; }
-            12.5% { content: '12%'; }
-            25% { content: '25%'; }
-            37.5% { content: '37%'; }
-            50% { content: '50%'; }
-            62.5% { content: '62%'; }
-            75% { content: '75%'; }
-            87.5% { content: '87%'; }
-            100% { content: '100%'; }
+        .modal-title {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        /* Estado de carga */
-        .loading-status {
+        .close-btn {
+            font-size: 2.2rem;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: all 0.3s ease;
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .input-group-modal {
+            margin-bottom: 25px;
+        }
+
+        .input-group-modal label {
+            display: block;
+            margin-bottom: 8px;
+            color: #fff;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .input-wrapper {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .input-wrapper input::placeholder {
             color: rgba(255, 255, 255, 0.7);
-            font-size: 12px;
-            margin-top: 20px;
-            animation: statusFade 2s ease-in-out infinite;
         }
 
-        @keyframes statusFade {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
+        #password-feedback {
+            font-size: 0.9rem;
+            color: #ffe6e6;
+            margin-top: 8px;
+            height: 1.2em;
+            font-weight: 500;
         }
 
-        /* Efectos de completado */
-        .complete {
-            animation: completePulse 0.5s ease-out;
+        .modal-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 25px;
         }
 
-        @keyframes completePulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .modal-btn {
+            border: none;
+            border-radius: 25px;
+            padding: 15px 40px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
         }
 
-        /* Responsivo */
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #ff1493 0%, #c71585 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(199, 21, 133, 0.3);
+        }
+
+        .modal-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(199, 21, 133, 0.4);
+        }
+
+        .modal-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .progress-container {
-                width: 300px;
+            .top-bar {
+                padding: 20px 15px;
             }
             
-            .studio-text {
-                font-size: 24px;
+            .brand-name {
+                font-size: 2.2rem;
             }
             
-            .blood-drop {
-                width: 60px;
-                height: 80px;
+            .menu-button {
+                min-width: 250px;
+                padding: 15px 35px;
+                font-size: 1.1rem;
             }
             
-            .drop-main {
-                width: 60px;
-                height: 60px;
+            .modal-content {
+                padding: 25px 20px;
+                margin: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Partículas de fondo -->
-    <div class="particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+    <!-- Elementos decorativos de fondo -->
+    <div class="decorative-elements">
+        <div class="floating-heart" style="top: 10%; left: 5%; animation-delay: 0s;"><i class="fas fa-heart"></i></div>
+        <div class="floating-heart" style="top: 70%; left: 90%; animation-delay: 2s;"><i class="fas fa-heart"></i></div>
+        <div class="floating-heart" style="top: 30%; left: 80%; animation-delay: 4s;"><i class="fas fa-heart"></i></div>
+        
+        <div class="floating-flower" style="top: 20%; left: 15%; animation-delay: 1s;"><i class="fas fa-flower"></i></div>
+        <div class="floating-flower" style="top: 60%; left: 10%; animation-delay: 3s;"><i class="fas fa-seedling"></i></div>
+        <div class="floating-flower" style="top: 80%; left: 75%; animation-delay: 5s;"><i class="fas fa-leaf"></i></div>
+        
+        <div class="floating-star" style="top: 15%; left: 70%; animation-delay: 0.5s;"><i class="fas fa-star"></i></div>
+        <div class="floating-star" style="top: 50%; left: 5%; animation-delay: 2.5s;"><i class="fas fa-star"></i></div>
+        <div class="floating-star" style="top: 85%; left: 30%; animation-delay: 4.5s;"><i class="fas fa-star"></i></div>
+        <div class="floating-star" style="top: 25%; left: 50%; animation-delay: 1.5s;"><i class="fas fa-star"></i></div>
+        
+        <div class="bubble" style="width: 20px; height: 20px; left: 10%; animation-delay: 0s;"></div>
+        <div class="bubble" style="width: 15px; height: 15px; left: 20%; animation-delay: 2s;"></div>
+        <div class="bubble" style="width: 25px; height: 25px; left: 70%; animation-delay: 4s;"></div>
+        <div class="bubble" style="width: 18px; height: 18px; left: 85%; animation-delay: 6s;"></div>
+        <div class="bubble" style="width: 22px; height: 22px; left: 40%; animation-delay: 8s;"></div>
     </div>
 
-    <div class="loading-container">
-        <!-- Gotita de sangre 3D -->
-        <div class="blood-drop">
-            <div class="drop-main">
-                <div class="drop-highlight"></div>
+    <div class="ui-container">
+        <div class="top-bar">
+            <div class="menu-text">MENU</div>
+            <div class="brand-name">Sneyder</div>
+            <div class="icon-group">
+                <i class="fas fa-bell icon"></i>
+                <i id="settings-icon" class="fas fa-cog icon"></i>
             </div>
-            <div class="drop-tail"></div>
         </div>
-
-        <!-- Texto Sneyder Estudio -->
-        <div class="studio-text">SNEYDER ESTUDIO</div>
-
-        <!-- Barra de progreso -->
-        <div class="progress-container">
-            <div class="progress-bar"></div>
+        
+        <div class="center-menu">
+            <button id="registro-btn" class="menu-button">
+                <i class="fas fa-user-plus"></i>Registro
+            </button>
+            <button id="registros-guardados-btn" class="menu-button">
+                <i class="fas fa-save"></i>Registros Guardados
+            </button>
+            <button id="info-personal-btn" class="menu-button">
+                <i class="fas fa-user-circle"></i>Información Personal
+            </button>
+            <button id="calendario-btn" class="menu-button">
+                <i class="fas fa-calendar-alt"></i>Calendario
+            </button>
+            <button id="cuidados-btn" class="menu-button">
+                <i class="fas fa-heart"></i>Cuidados
+            </button>
+            <button id="politicas-btn" class="menu-button">
+                <i class="fas fa-shield-alt"></i>Política de Privacidad
+            </button>
         </div>
-
-        <!-- Porcentaje -->
-        <div class="progress-text"></div>
-
-        <!-- Estado de carga -->
-        <div class="loading-status">Inicializando sistema...</div>
+    </div>
+    
+    <!-- Modal de configuración de cuenta -->
+    <div id="settingsModal" class="modal-overlay">
+        <form id="accountForm" class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-user-cog"></i> Cuenta de Usuario</h3>
+                <button type="button" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="input-group-modal">
+                <label for="accountName"><i class="fas fa-user"></i> Nombre</label>
+                <div class="input-wrapper">
+                    <input type="text" id="accountName" placeholder="Ingresa tu nombre">
+                </div>
+            </div>
+            
+            <div class="input-group-modal">
+                <label for="accountEmail"><i class="fas fa-envelope"></i> Correo Electrónico</label>
+                <div class="input-wrapper">
+                    <input type="email" id="accountEmail" placeholder="Ingresa tu email">
+                </div>
+            </div>
+            
+            <div class="input-group-modal">
+                <label for="accountPassword"><i class="fas fa-lock"></i> Contraseña</label>
+                <div class="input-wrapper">
+                    <input type="text" id="accountPassword" placeholder="8 dígitos numéricos">
+                </div>
+                <div id="password-feedback"></div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="submit" id="saveAccountBtn" class="modal-btn primary">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Modal de verificación -->
+    <div id="verifyModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-check-circle"></i> ¡Casi listo!</h3>
+            </div>
+            <p style="color: white; text-align: center; font-size: 1.1rem; margin-bottom: 20px;">
+                Verifica tu correo para completar tu registro. Te hemos enviado un enlace.
+            </p>
+            <div class="modal-buttons">
+                <button type="button" id="closeVerifyBtn" class="modal-btn primary">
+                    <i class="fas fa-thumbs-up"></i> Entendido
+                </button>
+            </div>
+        </div>
     </div>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Cambiar el estado de carga
-        const statusMessages = [
-            'Inicializando sistema...',
-            'Cargando recursos...',
-            'Configurando entorno...',
-            'Preparando interfaz...',
-            'Finalizando carga...',
-            'Completado'
-        ];
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Configuración de Supabase
+            const SUPABASE_URL = 'https://wrtdzisgzsouqldbdhug.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndydGR6aXNnenNvdXFsZGJkaHVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4ODc5ODEsImV4cCI6MjA2NTQ2Mzk4MX0.rpbuwf-UKH23bcRkOwlENjJIbzVkthAibkkVSfkBixQ';
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let currentStatus = 0;
-        const statusElement = document.querySelector('.loading-status');
+            // Referencias a elementos del DOM
+            const settingsModal = document.getElementById('settingsModal');
+            const settingsIcon = document.getElementById('settings-icon');
+            const closeBtn = settingsModal.querySelector('.close-btn');
+            const accountForm = document.getElementById('accountForm');
+            const accountName = document.getElementById('accountName');
+            const accountEmail = document.getElementById('accountEmail');
+            const accountPassword = document.getElementById('accountPassword');
+            const passwordFeedback = document.getElementById('password-feedback');
+            const brandName = document.querySelector('.brand-name');
+            const saveAccountBtn = document.getElementById('saveAccountBtn');
+            const verifyModal = document.getElementById('verifyModal');
+            const closeVerifyBtn = document.getElementById('closeVerifyBtn');
 
-        const statusInterval = setInterval(() => {
-            if (currentStatus < statusMessages.length - 1) {
-                currentStatus++;
-                statusElement.textContent = statusMessages[currentStatus];
+            // Funciones auxiliares
+            const openModal = (modal) => modal.classList.add('visible');
+            const closeModal = (modal) => modal.classList.remove('visible');
+
+            // Cargar información de la cuenta
+            const loadAccountInfo = async () => {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    const { data: profile } = await supabase.from('profiles').select('name, email').eq('id', user.id).single();
+                    if (profile) {
+                        accountName.value = profile.name || '';
+                        accountEmail.value = profile.email || '';
+                        brandName.textContent = profile.name || 'Usuario';
+                    }
+                    accountPassword.placeholder = "********";
+                } else {
+                    brandName.textContent = 'Sneyder';
+                }
+            };
+
+            // Event listeners para modales
+            settingsIcon.addEventListener('click', () => openModal(settingsModal));
+            closeBtn.addEventListener('click', () => closeModal(settingsModal));
+            closeVerifyBtn.addEventListener('click', () => closeModal(verifyModal));
+
+            // Cerrar modal al hacer clic fuera
+            settingsModal.addEventListener('click', (e) => {
+                if (e.target === settingsModal) closeModal(settingsModal);
+            });
+
+            // Manejo del formulario de cuenta
+            accountForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                saveAccountBtn.disabled = true;
+                saveAccountBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+                passwordFeedback.textContent = '';
+
+                const name = accountName.value;
+                const email = accountEmail.value;
+                const password = accountPassword.value;
+
+                // Validación de contraseña
+                if (!/^\d{8}$/.test(password)) {
+                    passwordFeedback.textContent = 'La contraseña debe tener 8 dígitos numéricos.';
+                    saveAccountBtn.disabled = false;
+                    saveAccountBtn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                    return;
+                }
+
+                try {
+                    // Intentar iniciar sesión
+                    const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+                    
+                    if (loginError) {
+                        if (loginError.message === 'Invalid login credentials') {
+                            // Crear nueva cuenta
+                            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                                email, 
+                                password, 
+                                options: { data: { name: name } }
+                            });
+                            
+                            if (signUpError) {
+                                passwordFeedback.textContent = signUpError.message;
+                            } else {
+                                alert('¡Cuenta creada! Serás redirigido.');
+                                sessionStorage.setItem('showVerifyPrompt', 'true');
+                                window.location.href = 'index.html';
+                            }
+                        } else {
+                            passwordFeedback.textContent = loginError.message;
+                        }
+                    } else {
+                        // Actualizar perfil
+                        await supabase.from('profiles').update({ name: name }).eq('id', loginData.user.id);
+                        alert('¡Sesión iniciada! Serás redirigido.');
+                        window.location.href = 'index.html';
+                    }
+                } catch (error) {
+                    passwordFeedback.textContent = 'Error de conexión. Intenta de nuevo.';
+                }
+
+                saveAccountBtn.disabled = false;
+                saveAccountBtn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+            });
+
+            // Configurar navegación
+            const setupNavigation = (user) => {
+                const navLinks = {
+                    'registro-btn': 'registro.html',
+                    'registros-guardados-btn': 'rejistro-guardado.html',
+                    'info-personal-btn': 'ver-informasion-personal.html',
+                    'calendario-btn': 'calendario.html',
+                    'cuidados-btn': 'cuidado.html',
+                    'politicas-btn': 'politicas.html'
+                };
+
+                for (const [btnId, url] of Object.entries(navLinks)) {
+                    document.getElementById(btnId).addEventListener('click', () => {
+                        if (user) {
+                            window.location.href = url;
+                        } else {
+                            alert('Por favor, inicia sesión o crea una cuenta usando el icono de configuración.');
+                            openModal(settingsModal);
+                        }
+                    });
+                }
+            };
+
+            // Inicialización
+            const { data: { session } } = await supabase.auth.getSession();
+            const user = session?.user;
+            await loadAccountInfo();
+            setupNavigation(user);
+
+            // Mostrar modal de verificación si es necesario
+            if (user && !user.email_confirmed_at && sessionStorage.getItem('showVerifyPrompt') === 'true') {
+                openModal(verifyModal);
+                sessionStorage.removeItem('showVerifyPrompt');
             }
-        }, 1600);
 
-        // Redirección automática después de 8 segundos
-        setTimeout(() => {
-            clearInterval(statusInterval);
-            document.querySelector('.loading-container').classList.add('complete');
-            statusElement.textContent = statusMessages[statusMessages.length - 1];
-            
-            // Redirección suave
-            setTimeout(() => {
-                window.location.href = 'menu.html';
-            }, 500);
-        }, 8000);
+            // Generar más burbujas dinámicamente
+            function createBubble() {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                bubble.style.width = bubble.style.height = Math.random() * 15 + 10 + 'px';
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.animationDuration = Math.random() * 5 + 8 + 's';
+                document.querySelector('.decorative-elements').appendChild(bubble);
 
-        // Efecto de sonido simulado (visual)
-        document.addEventListener('DOMContentLoaded', () => {
-            const progressBar = document.querySelector('.progress-bar');
-            
-            setTimeout(() => {
-                progressBar.style.transform = 'scaleX(1)';
-            }, 100);
+                setTimeout(() => {
+                    bubble.remove();
+                }, 13000);
+            }
+
+            // Crear burbujas periódicamente
+            setInterval(createBubble, 3000);
         });
     </script>
 </body>
