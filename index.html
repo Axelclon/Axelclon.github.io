@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SatoshiAds - Gana con Anuncios Reales</title>
+    <title>SatoshiAds - App Real (Arranque Corregido)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -30,7 +30,7 @@
             <div class="bg-gray-800 p-8 rounded-xl shadow-lg"><h2 id="auth-title" class="text-xl font-bold text-center mb-6">Iniciar Sesión</h2><form id="auth-form"><div id="username-field" class="mb-4 hidden"><label for="username" class="block text-sm font-medium text-gray-300 mb-2">Nombre de Usuario</label><input type="text" id="username" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:ring-orange-500 focus:border-orange-500" placeholder="tu_usuario"></div><div class="mb-4"><label for="email" class="block text-sm font-medium text-gray-300 mb-2">Correo Electrónico</label><input type="email" id="email" required class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:ring-orange-500 focus:border-orange-500" placeholder="tu@email.com"></div><div class="mb-6"><label for="password" class="block text-sm font-medium text-gray-300 mb-2">Contraseña</label><input type="password" id="password" required class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:ring-orange-500 focus:border-orange-500" placeholder="••••••••"></div><p id="auth-error" class="text-red-400 text-center text-sm mb-4 hidden"></p><button type="submit" id="auth-submit-btn" class="w-full satoshi-gradient text-gray-900 font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-opacity">Entrar</button></form><p class="text-center text-sm text-gray-400 mt-6"><span id="auth-prompt-text">¿No tienes cuenta?</span><button id="auth-toggle-btn" class="font-semibold text-orange-400 hover:underline">Regístrate aquí</button></p></div>
         </div>
 
-        <!-- Panel Principal del Usuario -->
+        <!-- Panel Principal del Usuario (sin cambios en la estructura) -->
         <div id="dashboard-screen" class="hidden w-full">
              <header class="flex justify-between items-center mb-6 pt-4">
                 <h1 class="text-2xl font-bold satoshi-gradient text-transparent bg-clip-text">Satoshi<span class="font-light">Ads</span></h1>
@@ -45,7 +45,6 @@
                     <h2 class="text-5xl font-bold tracking-tighter" id="balance">0</h2>
                     <p class="text-lg font-medium opacity-80">satoshis</p>
                 </div>
-                
                 <div class="bg-gray-800 p-6 rounded-xl shadow-lg mb-6">
                     <h3 class="text-lg font-semibold text-center mb-4">Ganancias del Día</h3>
                     <div class="flex justify-around text-center">
@@ -59,19 +58,14 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Bloque de Anuncios AADS INTEGRADO -->
                 <div class="bg-gray-800 p-6 rounded-xl shadow-lg mb-6 flex flex-col items-center">
                     <div id="ad-unit-container" class="flex justify-center w-full mb-4">
-                        <!-- CÓDIGO DE AADS ADAPTADO PARA MÓVIL (300x250) -->
                         <iframe data-aa='2401270' src='//ad.a-ads.com/2401270?size=300x250' style='width:300px; height:250px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
                     </div>
                     <button id="claim-share-btn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105">
                         🎟️ ¡He visto el anuncio! Ganar Participación
                     </button>
                 </div>
-
-                <!-- Sección de Retiro Lightning -->
                 <div id="payout-section" class="bg-gray-800 p-6 rounded-xl shadow-lg">
                     <h3 class="text-lg font-semibold">Retirar Saldo por Lightning</h3>
                     <p class="text-sm text-gray-400 mb-4">Mínimo para retirar: <span id="payout-threshold-text">1,000</span> satoshis.</p>
@@ -84,7 +78,6 @@
                     </form>
                 </div>
             </div>
-            <!-- Panel de solicitud enviada -->
             <div id="payout-sent-panel" class="hidden text-center bg-gray-800 p-8 rounded-xl shadow-lg fade-in">
                 <svg class="mx-auto h-12 w-12 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 <h2 class="mt-4 text-2xl font-bold text-white">¡Solicitud Enviada!</h2>
@@ -130,7 +123,6 @@
         const claimShareBtn = document.getElementById('claim-share-btn');
         const payoutThresholdText = document.getElementById('payout-threshold-text');
         const dashboardContent = document.getElementById('dashboard-content');
-        const payoutSection = document.getElementById('payout-section');
         const payoutForm = document.getElementById('payout-form');
         const lnInvoiceInput = document.getElementById('ln-invoice');
         const payoutErrorEl = document.getElementById('payout-error');
@@ -146,27 +138,36 @@
         let profileSubscription = null;
         const PAYOUT_THRESHOLD = 1000;
         
-        // --- LÓGICA DE AUTENTICACIÓN (sin cambios) ---
+        // --- LÓGICA DE NAVEGACIÓN ---
+        function showScreen(screenName) {
+            Object.values(screens).forEach(s => s.classList.add('hidden'));
+            screens[screenName]?.classList.remove('hidden');
+            screens[screenName]?.classList.add('fade-in');
+        }
+
+        // --- LÓGICA DE AUTENTICACIÓN ---
         authToggleBtn.addEventListener('click', () => { isLoginMode = !isLoginMode; authForm.reset(); authErrorEl.classList.add('hidden'); authTitle.textContent = isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta'; authSubmitBtn.textContent = isLoginMode ? 'Entrar' : 'Registrarme'; authPromptText.textContent = isLoginMode ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'; authToggleBtn.textContent = isLoginMode ? 'Regístrate aquí' : 'Inicia sesión'; usernameField.classList.toggle('hidden', isLoginMode); usernameInput.required = !isLoginMode; });
         authForm.addEventListener('submit', async (e) => { e.preventDefault(); const email = emailInput.value; const password = passwordInput.value; const username = usernameInput.value.trim(); authErrorEl.classList.add('hidden'); authSubmitBtn.disabled = true; try { if (isLoginMode) { const { error } = await supabaseClient.auth.signInWithPassword({ email, password }); if (error) throw error; } else { if (!username) throw { message: 'Por favor, introduce un nombre de usuario.' }; const { data: existingUser } = await supabaseClient.from('profiles').select('username').eq('username', username).single(); if (existingUser) throw { message: 'El nombre de usuario ya está en uso.'}; const { error } = await supabaseClient.auth.signUp({ email, password, options: { data: { username: username } } }); if (error) throw error; } } catch (error) { authErrorEl.textContent = error.message; authErrorEl.classList.remove('hidden'); } finally { authSubmitBtn.disabled = false; } });
         logoutBtn.addEventListener('click', async () => await supabaseClient.auth.signOut());
 
         // --- MANEJO DEL ESTADO DE SESIÓN ---
-        supabaseClient.auth.onAuthStateChange(async (event, session) => {
-            if (profileSubscription) { profileSubscription.unsubscribe(); profileSubscription = null; }
-            currentUser = session?.user;
+        async function handleAuthStateChange(user) {
+            if (profileSubscription) {
+                profileSubscription.unsubscribe();
+                profileSubscription = null;
+            }
+            currentUser = user;
             if (currentUser) {
                 await setupUserDashboard(currentUser);
                 showScreen('dashboard');
             } else {
                 showScreen('auth');
             }
-        });
+        }
 
         // --- LÓGICA DEL PANEL DE USUARIO ---
         async function setupUserDashboard(user) {
             payoutThresholdText.textContent = PAYOUT_THRESHOLD.toLocaleString();
-            
             profileSubscription = supabaseClient
                 .channel('public:profiles')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` }, payload => {
@@ -174,7 +175,6 @@
                     updateDashboardUI(userProfile);
                 })
                 .subscribe();
-
             const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
             if (data) {
                 userProfile = data;
@@ -190,71 +190,37 @@
             payoutBtn.disabled = userData.balance < PAYOUT_THRESHOLD;
         }
         
-        // --- LÓGICA DE LA APP ACTUALIZADA ---
+        // --- LÓGICA DE LA APP ---
         claimShareBtn.addEventListener('click', async () => {
             if (!currentUser || claimShareBtn.disabled) return;
             claimShareBtn.disabled = true;
             claimShareBtn.textContent = 'Registrando...';
-            
             const currentShares = userProfile.daily_shares || 0;
             const newShares = currentShares + 1;
-            
-            const { error } = await supabaseClient
-                .from('profiles')
-                .update({ daily_shares: newShares })
-                .eq('id', currentUser.id);
-
+            const { error } = await supabaseClient.from('profiles').update({ daily_shares: newShares }).eq('id', currentUser.id);
             if (error) {
-                console.error("Error al actualizar participaciones:", error);
                 claimShareBtn.textContent = 'Error. Intenta de nuevo.';
             } else {
                  claimShareBtn.textContent = '¡Participación Ganada!';
             }
-            
-            setTimeout(() => { 
-                claimShareBtn.disabled = false;
-                claimShareBtn.textContent = '🎟️ ¡He visto el anuncio! Ganar Participación';
-            }, 2000); // Prevenir spam de clics
+            setTimeout(() => { claimShareBtn.disabled = false; claimShareBtn.textContent = '🎟️ ¡He visto el anuncio! Ganar Participación'; }, 2000);
         });
         
         payoutForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             payoutErrorEl.classList.add('hidden');
             const invoice = lnInvoiceInput.value.trim().toLowerCase();
-
-            if (!invoice.startsWith('lnbc')) {
-                payoutErrorEl.textContent = "Factura no válida. Debe empezar con 'lnbc'.";
-                payoutErrorEl.classList.remove('hidden');
-                return;
-            }
-            
-            if (userProfile.balance < PAYOUT_THRESHOLD) {
-                payoutErrorEl.textContent = `Necesitas al menos ${PAYOUT_THRESHOLD.toLocaleString()} satoshis para retirar.`;
-                payoutErrorEl.classList.remove('hidden');
-                return;
-            }
-
+            if (!invoice.startsWith('lnbc')) { payoutErrorEl.textContent = "Factura no válida. Debe empezar con 'lnbc'."; payoutErrorEl.classList.remove('hidden'); return; }
+            if (userProfile.balance < PAYOUT_THRESHOLD) { payoutErrorEl.textContent = `Necesitas al menos ${PAYOUT_THRESHOLD.toLocaleString()} satoshis para retirar.`; payoutErrorEl.classList.remove('hidden'); return; }
             payoutBtn.disabled = true;
             payoutBtn.textContent = "Procesando...";
-
             try {
-                const { error: payoutError } = await supabaseClient.from('payouts').insert({
-                    id: currentUser.id,
-                    user_id: currentUser.id,
-                    username: userProfile.username,
-                    email: userProfile.email,
-                    amount: userProfile.balance,
-                    wallet_address: invoice,
-                    status: "pending"
-                });
+                const { error: payoutError } = await supabaseClient.from('payouts').insert({ id: currentUser.id, user_id: currentUser.id, username: userProfile.username, email: userProfile.email, amount: userProfile.balance, wallet_address: invoice, status: "pending" });
                 if (payoutError) throw payoutError;
-
                 const { error: profileError } = await supabaseClient.from('profiles').update({ balance: 0 }).eq('id', currentUser.id);
                 if (profileError) throw profileError;
-                
                 dashboardContent.classList.add('hidden');
                 payoutSentPanel.classList.remove('hidden');
-
             } catch (error) {
                 payoutErrorEl.textContent = "No se pudo procesar el retiro. Inténtalo de nuevo.";
                 payoutErrorEl.classList.remove('hidden');
@@ -269,6 +235,22 @@
             dashboardContent.classList.remove('hidden');
             lnInvoiceInput.value = '';
         });
+
+        // --- FUNCIÓN PRINCIPAL DE ARRANQUE ---
+        async function main() {
+            // 1. Comprobar la sesión actual inmediatamente
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            await handleAuthStateChange(session?.user);
+
+            // 2. Escuchar cambios futuros en la sesión
+            supabaseClient.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+                    handleAuthStateChange(session?.user);
+                }
+            });
+        }
+
+        main();
     });
     </script>
 </body>
