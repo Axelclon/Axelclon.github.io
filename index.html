@@ -8,219 +8,808 @@
     <meta name="5b8b3715818e54220efd8bff424fc43f93040447" content="5b8b3715818e54220efd8bff424fc43f93040447" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
     
-    <title>SatoshiAds - App Final (Arranque Definitivo)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>SatoshiAds - App Corregida</title>
+    
+    <!-- Estilos y Fuentes -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- SDKs externos que se cargarán antes de que se ejecute nuestro script -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vast-player@1.2.1/dist/vast-player.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <!-- Dependencias JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.js"></script>
+    
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .satoshi-gradient { background: linear-gradient(90deg, #F7931A, #FFAD4A); }
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        }
+        .satoshi-gradient { 
+            background: linear-gradient(90deg, #F7931A, #FFAD4A); 
+        }
+        .fade-in { 
+            animation: fadeIn 0.5s ease-in-out; 
+        }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        .loading-spinner {
+            border: 4px solid #374151;
+            border-top: 4px solid #F7931A;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         #ad-player-container {
             width: 100%;
             max-width: 320px;
-            aspect-ratio: 16 / 9;
-            background-color: #000;
+            height: 180px;
+            background: linear-gradient(45deg, #374151, #4B5563);
             border-radius: 0.75rem;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .success-checkmark {
+            color: #10B981;
+            font-size: 2rem;
+            animation: bounce 0.5s ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white">
+<body class="bg-gray-900 text-white min-h-screen">
 
     <!-- Contenedor Principal -->
     <div id="app-container" class="w-full max-w-md mx-auto min-h-screen flex flex-col justify-center p-4">
 
         <!-- Pantalla de Carga -->
-        <div id="loading-screen" class="text-center">
-            <h1 class="text-3xl font-bold satoshi-gradient text-transparent bg-clip-text">Satoshi<span class="font-light">Ads</span></h1>
-            <p id="loading-text" class="text-gray-400 mt-2">Cargando recursos...</p>
+        <div id="loading-screen" class="text-center fade-in">
+            <div class="mb-6">
+                <h1 class="text-4xl font-bold satoshi-gradient text-transparent bg-clip-text mb-2">
+                    <i class="fas fa-bitcoin-sign"></i> Satoshi<span class="font-light">Ads</span>
+                </h1>
+                <p class="text-gray-400">Gana Bitcoin viendo anuncios</p>
+            </div>
+            <div class="loading-spinner mb-4"></div>
+            <p id="loading-text" class="text-gray-400">Inicializando aplicación...</p>
+            <div id="loading-progress" class="w-full bg-gray-700 rounded-full h-2 mt-4">
+                <div id="loading-bar" class="bg-gradient-to-r from-orange-500 to-yellow-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
         </div>
 
-        <!-- Pantalla de Autenticación (sin cambios) -->
-        <div id="auth-screen" class="hidden">
-            <div class="text-center mb-8"><h1 class="text-3xl font-bold satoshi-gradient text-transparent bg-clip-text">Satoshi<span class="font-light">Ads</span></h1><p class="text-gray-300 mt-2">Gana Bitcoin viendo anuncios.</p></div>
-            <div class="bg-gray-800 p-8 rounded-xl shadow-lg"><h2 id="auth-title" class="text-xl font-bold text-center mb-6">Iniciar Sesión</h2><form id="auth-form"><div id="username-field" class="mb-4 hidden"><label for="username" class="block text-sm font-medium text-gray-300 mb-2">Nombre de Usuario</label><input type="text" id="username" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:ring-orange-500 focus:border-orange-500" placeholder="tu_usuario"></div><div class="mb-4"><label for="email" class="block text-sm font-medium text-gray-300 mb-2">Correo Electrónico</label><input type="email" id="email" required class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:ring-orange-500 focus:border-orange-500" placeholder="tu@email.com"></div><div class="mb-6"><label for="password" class="block text-sm font-medium text-gray-300 mb-2">Contraseña</label><input type="password" id="password" required class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:ring-orange-500 focus:border-orange-500" placeholder="••••••••"></div><p id="auth-error" class="text-red-400 text-center text-sm mb-4 hidden"></p><button type="submit" id="auth-submit-btn" class="w-full satoshi-gradient text-gray-900 font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-opacity">Entrar</button></form><p class="text-center text-sm text-gray-400 mt-6"><span id="auth-prompt-text">¿No tienes cuenta?</span><button id="auth-toggle-btn" class="font-semibold text-orange-400 hover:underline">Regístrate aquí</button></p></div>
+        <!-- Pantalla de Error -->
+        <div id="error-screen" class="text-center hidden">
+            <div class="bg-red-900 bg-opacity-50 p-8 rounded-xl shadow-lg">
+                <i class="fas fa-exclamation-triangle text-red-400 text-4xl mb-4"></i>
+                <h2 class="text-xl font-bold text-red-400 mb-4">Error de Carga</h2>
+                <p id="error-message" class="text-gray-300 mb-6">Ha ocurrido un error al cargar la aplicación.</p>
+                <button id="retry-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    <i class="fas fa-redo mr-2"></i>Reintentar
+                </button>
+            </div>
         </div>
 
-        <!-- Panel Principal del Usuario (sin cambios en la estructura) -->
-        <div id="dashboard-screen" class="hidden w-full">
-             <header class="flex justify-between items-center mb-6 pt-4">
-                <h1 class="text-2xl font-bold satoshi-gradient text-transparent bg-clip-text">Satoshi<span class="font-light">Ads</span></h1>
-                <div class="text-right">
-                    <p id="user-display" class="text-sm text-gray-300 font-semibold truncate max-w-[150px]"></p>
-                    <button id="logout-btn" class="text-xs text-orange-400 hover:underline">Cerrar Sesión</button>
-                </div>
-            </header>
-            <div id="dashboard-content">
-                <div class="satoshi-gradient p-6 rounded-xl shadow-lg mb-6 text-center text-gray-900">
-                    <p class="text-lg font-medium opacity-80">Saldo Total para Retirar</p>
-                    <h2 class="text-5xl font-bold tracking-tighter" id="balance">0</h2>
-                    <p class="text-lg font-medium opacity-80">satoshis</p>
-                </div>
-                <div class="bg-gray-800 p-6 rounded-xl shadow-lg mb-6">
-                    <h3 class="text-lg font-semibold text-center mb-4">Ganancias del Día</h3>
-                    <div class="flex justify-around text-center">
-                        <div><p class="text-gray-400 text-sm">Tus Participaciones Hoy</p><p id="daily-shares" class="text-2xl font-bold text-orange-400">0</p></div>
-                        <div><p class="text-gray-400 text-sm">Valor Ayer / Part.</p><p id="last-day-value" class="text-2xl font-bold">~2 sats</p></div>
+        <!-- Pantalla de Autenticación -->
+        <div id="auth-screen" class="hidden fade-in">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold satoshi-gradient text-transparent bg-clip-text">
+                    <i class="fas fa-bitcoin-sign"></i> Satoshi<span class="font-light">Ads</span>
+                </h1>
+                <p class="text-gray-300 mt-2">Gana Bitcoin viendo anuncios</p>
+            </div>
+            
+            <div class="bg-gray-800 bg-opacity-50 backdrop-blur-sm p-8 rounded-xl shadow-2xl">
+                <h2 id="auth-title" class="text-xl font-bold text-center mb-6">Iniciar Sesión</h2>
+                
+                <form id="auth-form" class="space-y-4">
+                    <div id="username-field" class="hidden">
+                        <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-user mr-2"></i>Nombre de Usuario
+                        </label>
+                        <input type="text" id="username" class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all" placeholder="tu_usuario">
                     </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-envelope mr-2"></i>Correo Electrónico
+                        </label>
+                        <input type="email" id="email" required class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all" placeholder="tu@email.com">
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-lock mr-2"></i>Contraseña
+                        </label>
+                        <input type="password" id="password" required class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all" placeholder="••••••••">
+                    </div>
+                    
+                    <div id="auth-error" class="text-red-400 text-center text-sm p-3 bg-red-900 bg-opacity-30 rounded-lg hidden">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span id="auth-error-text"></span>
+                    </div>
+                    
+                    <button type="submit" id="auth-submit-btn" class="w-full satoshi-gradient text-gray-900 font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50">
+                        <span id="auth-submit-text">Entrar</span>
+                        <i id="auth-loading-spinner" class="fas fa-spinner fa-spin ml-2 hidden"></i>
+                    </button>
+                </form>
+                
+                <div class="text-center mt-6 pt-4 border-t border-gray-700">
+                    <p class="text-sm text-gray-400">
+                        <span id="auth-prompt-text">¿No tienes cuenta?</span>
+                        <button id="auth-toggle-btn" class="font-semibold text-orange-400 hover:text-orange-300 transition-colors ml-2">
+                            Regístrate aquí
+                        </button>
+                    </p>
                 </div>
-                <div class="bg-gray-800 p-6 rounded-xl shadow-lg mb-6 flex flex-col items-center">
-                    <div id="ad-player-container" class="mb-4"></div>
-                    <p id="ad-status" class="text-sm text-yellow-400 h-5 mb-2"></p>
-                    <button id="watch-ad-btn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed">
-                        ▶️ Ver Anuncio para Ganar Participación
+            </div>
+        </div>
+
+        <!-- Panel Principal del Usuario -->
+        <div id="dashboard-screen" class="hidden w-full fade-in">
+            <header class="flex justify-between items-center mb-6 pt-4">
+                <h1 class="text-2xl font-bold satoshi-gradient text-transparent bg-clip-text">
+                    <i class="fas fa-bitcoin-sign"></i> Satoshi<span class="font-light">Ads</span>
+                </h1>
+                <div class="text-right">
+                    <p id="user-display" class="text-sm text-gray-300 font-semibold truncate max-w-[150px]">
+                        <i class="fas fa-user-circle mr-1"></i>
+                        <span id="user-name"></span>
+                    </p>
+                    <button id="logout-btn" class="text-xs text-orange-400 hover:text-orange-300 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Cerrar Sesión
                     </button>
                 </div>
-                <div id="payout-section" class="bg-gray-800 p-6 rounded-xl shadow-lg">
-                    <h3 class="text-lg font-semibold">Retirar Saldo por Lightning</h3>
-                    <p class="text-sm text-gray-400 mb-4">Mínimo para retirar: <span id="payout-threshold-text">1,000</span> satoshis.</p>
-                    <form id="payout-form"><textarea id="ln-invoice" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:ring-orange-500 focus:border-orange-500" placeholder="Pega aquí tu factura de Speed Wallet (lnbc...)"></textarea><p id="payout-error" class="text-red-400 text-xs mt-1 hidden"></p><button id="payout-btn" type="submit" class="w-full mt-4 bg-orange-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed">Solicitar Retiro</button></form>
+            </header>
+
+            <div id="dashboard-content" class="space-y-6">
+                <!-- Saldo Principal -->
+                <div class="satoshi-gradient p-6 rounded-xl shadow-lg text-center text-gray-900">
+                    <div class="flex items-center justify-center mb-2">
+                        <i class="fas fa-wallet text-2xl mr-2"></i>
+                        <p class="text-lg font-medium">Saldo Total</p>
+                    </div>
+                    <h2 class="text-5xl font-bold tracking-tighter mb-1" id="balance">0</h2>
+                    <p class="text-lg font-medium opacity-80">satoshis</p>
+                </div>
+
+                <!-- Estadísticas Diarias -->
+                <div class="bg-gray-800 bg-opacity-50 backdrop-blur-sm p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold text-center mb-4">
+                        <i class="fas fa-chart-line mr-2"></i>Estadísticas del Día
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="text-center">
+                            <p class="text-gray-400 text-sm mb-1">Anuncios Vistos</p>
+                            <p id="daily-shares" class="text-2xl font-bold text-orange-400">0</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-gray-400 text-sm mb-1">Valor Promedio</p>
+                            <p id="last-day-value" class="text-2xl font-bold text-green-400">~2 sats</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reproductor de Anuncios -->
+                <div class="bg-gray-800 bg-opacity-50 backdrop-blur-sm p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold text-center mb-4">
+                        <i class="fas fa-play-circle mr-2"></i>Ver Anuncios
+                    </h3>
+                    
+                    <div id="ad-player-container" class="mb-4 mx-auto">
+                        <div id="ad-placeholder" class="text-center text-gray-400">
+                            <i class="fas fa-video text-4xl mb-2"></i>
+                            <p class="text-sm">Reproductor de Anuncios</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mb-4">
+                        <p id="ad-status" class="text-sm text-yellow-400 h-5 mb-2"></p>
+                        <button id="watch-ad-btn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed">
+                            <i class="fas fa-play mr-2"></i>Ver Anuncio para Ganar Satoshis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sistema de Retiros -->
+                <div id="payout-section" class="bg-gray-800 bg-opacity-50 backdrop-blur-sm p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold mb-4">
+                        <i class="fas fa-bolt mr-2"></i>Retirar por Lightning Network
+                    </h3>
+                    <div class="bg-blue-900 bg-opacity-30 p-3 rounded-lg mb-4">
+                        <p class="text-sm text-blue-300">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Mínimo: <span id="payout-threshold-text" class="font-bold">1,000</span> satoshis
+                        </p>
+                    </div>
+                    
+                    <form id="payout-form" class="space-y-4">
+                        <div>
+                            <label for="ln-invoice" class="block text-sm font-medium text-gray-300 mb-2">
+                                Lightning Invoice
+                            </label>
+                            <textarea id="ln-invoice" rows="3" class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all" placeholder="Pega aquí tu factura Lightning (lnbc...)"></textarea>
+                        </div>
+                        
+                        <div id="payout-error" class="text-red-400 text-sm p-3 bg-red-900 bg-opacity-30 rounded-lg hidden">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <span id="payout-error-text"></span>
+                        </div>
+                        
+                        <button id="payout-btn" type="submit" class="w-full bg-orange-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors">
+                            <i class="fas fa-paper-plane mr-2"></i>Solicitar Retiro
+                        </button>
+                    </form>
                 </div>
             </div>
-            <div id="payout-sent-panel" class="hidden text-center bg-gray-800 p-8 rounded-xl shadow-lg fade-in">
-                <svg class="mx-auto h-12 w-12 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <h2 class="mt-4 text-2xl font-bold text-white">¡Solicitud Enviada!</h2><p class="mt-2 text-gray-300">Tu retiro está en la cola para ser procesado.</p><button id="back-to-dashboard-btn" class="mt-6 text-orange-400 hover:underline">Volver al panel</button>
+
+            <!-- Panel de Confirmación de Retiro -->
+            <div id="payout-sent-panel" class="hidden text-center bg-gray-800 bg-opacity-50 backdrop-blur-sm p-8 rounded-xl shadow-lg fade-in">
+                <div class="success-checkmark mb-4">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-2">¡Solicitud Enviada!</h2>
+                <p class="text-gray-300 mb-6">Tu retiro está siendo procesado. Recibirás el pago en breve.</p>
+                <button id="back-to-dashboard-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Volver al Dashboard
+                </button>
             </div>
-            <footer class="text-center mt-6"><p class="text-xs text-gray-500">&copy; 2025 SatoshiAds. Todos los derechos reservados.</p></footer>
+
+            <footer class="text-center mt-8 pt-4 border-t border-gray-700">
+                <p class="text-xs text-gray-500">
+                    <i class="fas fa-copyright mr-1"></i>
+                    2025 SatoshiAds. Todos los derechos reservados.
+                </p>
+            </footer>
         </div>
     </div>
 
     <script>
-    // --- MÉTODO DE ARRANQUE ROBUSTO ---
-    // Este código se ejecuta cuando la ventana entera, incluyendo todos los scripts, está cargada.
-    window.onload = function() {
-        const loadingText = document.getElementById('loading-text');
+        // Configuración Global
+        const CONFIG = {
+            SUPABASE_URL: 'https://xuvnvzymjntlqtbdmvnk.supabase.co',
+            SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dm52enltam50bHF0YmRtdm5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1MTI0ODYsImV4cCI6MjA2NzA4ODQ4Nn0.cfOVV53bsqB6spQ0sltdhzFLc5KQDDIJkBFRj5h8S-U',
+            PAYOUT_THRESHOLD: 1000,
+            AD_REWARD_SATOSHIS: 50,
+            LOADING_STEPS: ['Cargando dependencias...', 'Conectando a la red...', 'Inicializando reproductor...', 'Listo!']
+        };
 
-        // 1. Verificar que las herramientas externas existen
-        if (typeof supabase === 'undefined' || typeof VastPlayer === 'undefined') {
-            loadingText.textContent = 'Error: Las herramientas externas no se pudieron cargar. Revisa tu conexión.';
-            loadingText.classList.add('text-red-400');
-            return; // Detener la ejecución si las herramientas no están listas
-        }
-
-        // 2. Si todo está bien, ejecutar la lógica principal de la aplicación
-        runApp();
-    };
-
-    // --- LÓGICA PRINCIPAL DE LA APLICACIÓN ---
-    function runApp() {
-        const SUPABASE_URL = 'https://xuvnvzymjntlqtbdmvnk.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dm52enltam50bHF0YmRtdm5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1MTI0ODYsImV4cCI6MjA2NzA4ODQ4Nn0.cfOVV53bsqB6spQ0sltdhzFLc5KQDDIJkBFRj5h8S-U';
-        const VAST_TAG_URL = 'https://onda-cilíndrica.com/dxmCFaz.doGrNTv/ZWGgUB/nezmO9OuwZXUKlekcP/T_Y/0GNfzSQm1SNqzXAHtmN/j/Qw3BN-DtUT3WM/Qq';
-
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        const screens = { loading: document.getElementById('loading-screen'), auth: document.getElementById('auth-screen'), dashboard: document.getElementById('dashboard-screen') };
-        const authForm = document.getElementById('auth-form');
-        const authTitle = document.getElementById('auth-title');
-        const authSubmitBtn = document.getElementById('auth-submit-btn');
-        const authToggleBtn = document.getElementById('auth-toggle-btn');
-        const authPromptText = document.getElementById('auth-prompt-text');
-        const authErrorEl = document.getElementById('auth-error');
-        const usernameField = document.getElementById('username-field');
-        const usernameInput = document.getElementById('username');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const logoutBtn = document.getElementById('logout-btn');
-        const userDisplay = document.getElementById('user-display');
-        const balanceEl = document.getElementById('balance');
-        const payoutThresholdText = document.getElementById('payout-threshold-text');
-        const dashboardContent = document.getElementById('dashboard-content');
-        const payoutForm = document.getElementById('payout-form');
-        const lnInvoiceInput = document.getElementById('ln-invoice');
-        const payoutErrorEl = document.getElementById('payout-error');
-        const payoutBtn = document.getElementById('payout-btn');
-        const payoutSentPanel = document.getElementById('payout-sent-panel');
-        const backToDashboardBtn = document.getElementById('back-to-dashboard-btn');
-        const dailySharesEl = document.getElementById('daily-shares');
-        const adPlayerContainer = document.getElementById('ad-player-container');
-        const adStatusEl = document.getElementById('ad-status');
-        const watchAdBtn = document.getElementById('watch-ad-btn');
-
-        let isLoginMode = true;
+        // Variables Globales
+        let supabaseClient = null;
         let currentUser = null;
         let userProfile = null;
         let profileSubscription = null;
-        let adPlayer = null;
-        const PAYOUT_THRESHOLD = 1000;
-        
-        function showScreen(screenName) {
-            Object.values(screens).forEach(s => s.classList.add('hidden'));
-            screens[screenName]?.classList.remove('hidden');
-            screens[screenName]?.classList.add('fade-in');
-        }
+        let isLoginMode = true;
+        let loadingStep = 0;
 
-        authToggleBtn.addEventListener('click', () => { isLoginMode = !isLoginMode; authForm.reset(); authErrorEl.classList.add('hidden'); authTitle.textContent = isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta'; authSubmitBtn.textContent = isLoginMode ? 'Entrar' : 'Registrarme'; authPromptText.textContent = isLoginMode ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'; authToggleBtn.textContent = isLoginMode ? 'Regístrate aquí' : 'Inicia sesión'; usernameField.classList.toggle('hidden', isLoginMode); usernameInput.required = !isLoginMode; });
-        authForm.addEventListener('submit', async (e) => { e.preventDefault(); const email = emailInput.value; const password = passwordInput.value; const username = usernameInput.value.trim(); authErrorEl.classList.add('hidden'); authSubmitBtn.disabled = true; try { if (isLoginMode) { const { error } = await supabaseClient.auth.signInWithPassword({ email, password }); if (error) throw error; } else { if (!username) throw { message: 'Por favor, introduce un nombre de usuario.' }; const { data: existingUser } = await supabaseClient.from('profiles').select('username').eq('username', username).single(); if (existingUser) throw { message: 'El nombre de usuario ya está en uso.'}; const { error } = await supabaseClient.auth.signUp({ email, password, options: { data: { username: username } } }); if (error) throw error; } } catch (error) { authErrorEl.textContent = error.message; authErrorEl.classList.remove('hidden'); } finally { authSubmitBtn.disabled = false; } });
-        logoutBtn.addEventListener('click', async () => await supabaseClient.auth.signOut());
+        // Elementos DOM
+        const screens = {
+            loading: document.getElementById('loading-screen'),
+            error: document.getElementById('error-screen'),
+            auth: document.getElementById('auth-screen'),
+            dashboard: document.getElementById('dashboard-screen')
+        };
 
-        async function handleAuthStateChange(user) {
-            if (profileSubscription) { profileSubscription.unsubscribe(); profileSubscription = null; }
-            currentUser = user;
-            if (currentUser) {
-                await setupUserDashboard(currentUser);
-                showScreen('dashboard');
-            } else {
-                showScreen('auth');
+        // Manejo de Carga Inicial
+        class AppLoader {
+            constructor() {
+                this.loadingText = document.getElementById('loading-text');
+                this.loadingBar = document.getElementById('loading-bar');
+                this.errorMessage = document.getElementById('error-message');
+                this.retryBtn = document.getElementById('retry-btn');
+                
+                this.retryBtn.addEventListener('click', () => this.initialize());
+            }
+
+            updateProgress(step, percentage) {
+                this.loadingText.textContent = CONFIG.LOADING_STEPS[step] || 'Cargando...';
+                this.loadingBar.style.width = percentage + '%';
+            }
+
+            async initialize() {
+                try {
+                    this.showScreen('loading');
+                    
+                    // Paso 1: Verificar dependencias
+                    this.updateProgress(0, 25);
+                    await this.checkDependencies();
+                    
+                    // Paso 2: Inicializar Supabase
+                    this.updateProgress(1, 50);
+                    await this.initializeSupabase();
+                    
+                    // Paso 3: Configurar reproductor
+                    this.updateProgress(2, 75);
+                    await this.initializeAdSystem();
+                    
+                    // Paso 4: Finalizar
+                    this.updateProgress(3, 100);
+                    await this.delay(500);
+                    
+                    // Inicializar aplicación
+                    app.initialize();
+                    
+                } catch (error) {
+                    console.error('Error de inicialización:', error);
+                    this.showError(error.message);
+                }
+            }
+
+            async checkDependencies() {
+                await this.delay(500);
+                if (typeof supabase === 'undefined') {
+                    throw new Error('Error al cargar Supabase. Verifica tu conexión a internet.');
+                }
+            }
+
+            async initializeSupabase() {
+                await this.delay(500);
+                try {
+                    supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+                    // Verificar conexión
+                    const { data, error } = await supabaseClient.from('profiles').select('count').limit(1);
+                    if (error && error.code !== 'PGRST116') {
+                        throw new Error('Error de conexión a la base de datos');
+                    }
+                } catch (error) {
+                    throw new Error('Error al inicializar Supabase: ' + error.message);
+                }
+            }
+
+            async initializeAdSystem() {
+                await this.delay(500);
+                // Inicializar sistema de anuncios mock
+                return true;
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            showScreen(screenName) {
+                Object.values(screens).forEach(s => s.classList.add('hidden'));
+                screens[screenName]?.classList.remove('hidden');
+            }
+
+            showError(message) {
+                this.errorMessage.textContent = message;
+                this.showScreen('error');
             }
         }
 
-        async function setupUserDashboard(user) {
-            payoutThresholdText.textContent = PAYOUT_THRESHOLD.toLocaleString();
-            initializeAdPlayer();
-            profileSubscription = supabaseClient.channel('public:profiles').on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` }, payload => { userProfile = payload.new; updateDashboardUI(userProfile); }).subscribe();
-            const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
-            if (data) { userProfile = data; updateDashboardUI(userProfile); }
+        // Aplicación Principal
+        class SatoshiAdsApp {
+            constructor() {
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                // Autenticación
+                document.getElementById('auth-toggle-btn').addEventListener('click', () => this.toggleAuthMode());
+                document.getElementById('auth-form').addEventListener('submit', (e) => this.handleAuth(e));
+                document.getElementById('logout-btn').addEventListener('click', () => this.logout());
+
+                // Dashboard
+                document.getElementById('watch-ad-btn').addEventListener('click', () => this.watchAd());
+                document.getElementById('payout-form').addEventListener('submit', (e) => this.handlePayout(e));
+                document.getElementById('back-to-dashboard-btn').addEventListener('click', () => this.showDashboard());
+            }
+
+            async initialize() {
+                // Configurar listener de autenticación
+                supabaseClient.auth.onAuthStateChange((event, session) => {
+                    this.handleAuthStateChange(session?.user);
+                });
+
+                // Verificar sesión existente
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                this.handleAuthStateChange(session?.user);
+            }
+
+            async handleAuthStateChange(user) {
+                if (profileSubscription) {
+                    profileSubscription.unsubscribe();
+                    profileSubscription = null;
+                }
+
+                currentUser = user;
+                
+                if (currentUser) {
+                    await this.setupUserDashboard();
+                    this.showScreen('dashboard');
+                } else {
+                    this.showScreen('auth');
+                }
+            }
+
+            toggleAuthMode() {
+                isLoginMode = !isLoginMode;
+                this.updateAuthUI();
+            }
+
+            updateAuthUI() {
+                const title = document.getElementById('auth-title');
+                const submitBtn = document.getElementById('auth-submit-text');
+                const promptText = document.getElementById('auth-prompt-text');
+                const toggleBtn = document.getElementById('auth-toggle-btn');
+                const usernameField = document.getElementById('username-field');
+                const usernameInput = document.getElementById('username');
+
+                if (isLoginMode) {
+                    title.textContent = 'Iniciar Sesión';
+                    submitBtn.textContent = 'Entrar';
+                    promptText.textContent = '¿No tienes cuenta?';
+                    toggleBtn.textContent = 'Regístrate aquí';
+                    usernameField.classList.add('hidden');
+                    usernameInput.required = false;
+                } else {
+                    title.textContent = 'Crear Cuenta';
+                    submitBtn.textContent = 'Registrarme';
+                    promptText.textContent = '¿Ya tienes cuenta?';
+                    toggleBtn.textContent = 'Inicia sesión';
+                    usernameField.classList.remove('hidden');
+                    usernameInput.required = true;
+                }
+
+                this.hideAuthError();
+            }
+
+            async handleAuth(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const username = document.getElementById('username').value.trim();
+                const submitBtn = document.getElementById('auth-submit-btn');
+                const spinner = document.getElementById('auth-loading-spinner');
+
+                this.hideAuthError();
+                this.setAuthLoading(true);
+
+                try {
+                    if (isLoginMode) {
+                        const { error } = await supabaseClient.auth.signInWithPassword({
+                            email,
+                            password
+                        });
+                        if (error) throw error;
+                    } else {
+                        if (!username) {
+                            throw new Error('Por favor, introduce un nombre de usuario.');
+                        }
+
+                        // Verificar si el username ya existe
+                        const { data: existingUser } = await supabaseClient
+                            .from('profiles')
+                            .select('username')
+                            .eq('username', username)
+                            .single();
+
+                        if (existingUser) {
+                            throw new Error('El nombre de usuario ya está en uso.');
+                        }
+
+                        const { error } = await supabaseClient.auth.signUp({
+                            email,
+                            password,
+                            options: {
+                                data: {
+                                    username: username
+                                }
+                            }
+                        });
+                        if (error) throw error;
+                    }
+                } catch (error) {
+                    this.showAuthError(error.message);
+                } finally {
+                    this.setAuthLoading(false);
+                }
+            }
+
+            setAuthLoading(loading) {
+                const submitBtn = document.getElementById('auth-submit-btn');
+                const spinner = document.getElementById('auth-loading-spinner');
+                
+                submitBtn.disabled = loading;
+                if (loading) {
+                    spinner.classList.remove('hidden');
+                } else {
+                    spinner.classList.add('hidden');
+                }
+            }
+
+            showAuthError(message) {
+                const errorEl = document.getElementById('auth-error');
+                const errorText = document.getElementById('auth-error-text');
+                
+                errorText.textContent = message;
+                errorEl.classList.remove('hidden');
+            }
+
+            hideAuthError() {
+                document.getElementById('auth-error').classList.add('hidden');
+            }
+
+            async setupUserDashboard() {
+                // Suscribirse a cambios en el perfil
+                profileSubscription = supabaseClient
+                    .channel('public:profiles')
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'profiles',
+                        filter: `id=eq.${currentUser.id}`
+                    }, (payload) => {
+                        userProfile = payload.new;
+                        this.updateDashboardUI();
+                    })
+                    .subscribe();
+
+                // Cargar perfil del usuario
+                const { data, error } = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (data) {
+                    userProfile = data;
+                } else {
+                    // Crear perfil si no existe
+                    await this.createUserProfile();
+                }
+
+                this.updateDashboardUI();
+                this.initializeAdPlayer();
+            }
+
+            async createUserProfile() {
+                const { data, error } = await supabaseClient
+                    .from('profiles')
+                    .insert([{
+                        id: currentUser.id,
+                        username: currentUser.user_metadata?.username || currentUser.email,
+                        email: currentUser.email,
+                        balance: 0,
+                        daily_shares: 0
+                    }])
+                    .select()
+                    .single();
+
+                if (data) {
+                    userProfile = data;
+                }
+            }
+
+            updateDashboardUI() {
+                if (!userProfile) return;
+
+                document.getElementById('user-name').textContent = userProfile.username;
+                document.getElementById('balance').textContent = (userProfile.balance || 0).toLocaleString();
+                document.getElementById('daily-shares').textContent = (userProfile.daily_shares || 0).toLocaleString();
+                document.getElementById('payout-threshold-text').textContent = CONFIG.PAYOUT_THRESHOLD.toLocaleString();
+                
+                const payoutBtn = document.getElementById('payout-btn');
+                payoutBtn.disabled = userProfile.balance < CONFIG.PAYOUT_THRESHOLD;
+            }
+
+            initializeAdPlayer() {
+                const adStatus = document.getElementById('ad-status');
+                const watchAdBtn = document.getElementById('watch-ad-btn');
+                
+                adStatus.textContent = 'Anuncios listos para ver';
+                watchAdBtn.disabled = false;
+            }
+
+            async watchAd() {
+                const adStatus = document.getElementById('ad-status');
+                const watchAdBtn = document.getElementById('watch-ad-btn');
+                const adContainer = document.getElementById('ad-player-container');
+                
+                watchAdBtn.disabled = true;
+                adStatus.textContent = 'Reproduciendo anuncio...';
+                
+                // Simular reproducción de anuncio
+                adContainer.innerHTML = `
+                    <div class="text-center text-white">
+                        <i class="fas fa-play-circle text-6xl mb-4 pulse"></i>
+                        <p class="text-sm">Anuncio en reproducción</p>
+                        <div class="w-full bg-gray-600 rounded-full h-2 mt-4">
+                            <div id="ad-progress" class="bg-orange-500 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                    </div>
+                `;
+
+                // Simular progreso del anuncio
+                const progressBar = document.getElementById('ad-progress');
+                for (let i = 0; i <= 100; i += 10) {
+                    progressBar.style.width = i + '%';
+                    await this.delay(300);
+                }
+
+                // Completar anuncio
+                await this.completeAd();
+            }
+
+            async completeAd() {
+                const adStatus = document.getElementById('ad-status');
+                const watchAdBtn = document.getElementById('watch-ad-btn');
+                const adContainer = document.getElementById('ad-player-container');
+                
+                adStatus.textContent = '¡Anuncio completado! Ganaste ' + CONFIG.AD_REWARD_SATOSHIS + ' satoshis';
+                
+                // Mostrar éxito
+                adContainer.innerHTML = `
+                    <div class="text-center text-white">
+                        <i class="fas fa-check-circle text-6xl mb-4 success-checkmark"></i>
+                        <p class="text-sm">+${CONFIG.AD_REWARD_SATOSHIS} satoshis</p>
+                    </div>
+                `;
+
+                // Actualizar saldo
+                await this.claimReward();
+
+                // Resetear después de 3 segundos
+                setTimeout(() => {
+                    adContainer.innerHTML = `
+                        <div id="ad-placeholder" class="text-center text-gray-400">
+                            <i class="fas fa-video text-4xl mb-2"></i>
+                            <p class="text-sm">Reproductor de Anuncios</p>
+                        </div>
+                    `;
+                    adStatus.textContent = 'Listo para el próximo anuncio';
+                    watchAdBtn.disabled = false;
+                }, 3000);
+            }
+
+            async claimReward() {
+                if (!currentUser || !userProfile) return;
+
+                const newBalance = (userProfile.balance || 0) + CONFIG.AD_REWARD_SATOSHIS;
+                const newDailyShares = (userProfile.daily_shares || 0) + 1;
+
+                const { error } = await supabaseClient
+                    .from('profiles')
+                    .update({
+                        balance: newBalance,
+                        daily_shares: newDailyShares
+                    })
+                    .eq('id', currentUser.id);
+
+                if (!error) {
+                    userProfile.balance = newBalance;
+                    userProfile.daily_shares = newDailyShares;
+                    this.updateDashboardUI();
+                }
+            }
+
+            async handlePayout(e) {
+                e.preventDefault();
+                
+                const lnInvoice = document.getElementById('ln-invoice').value.trim();
+                const payoutBtn = document.getElementById('payout-btn');
+                const payoutError = document.getElementById('payout-error');
+                const payoutErrorText = document.getElementById('payout-error-text');
+                
+                this.hidePayoutError();
+                
+                // Validaciones
+                if (!lnInvoice.toLowerCase().startsWith('lnbc')) {
+                    this.showPayoutError('Por favor, introduce una factura Lightning válida (debe comenzar con "lnbc")');
+                    return;
+                }
+
+                if (userProfile.balance < CONFIG.PAYOUT_THRESHOLD) {
+                    this.showPayoutError(`Saldo insuficiente. Necesitas al menos ${CONFIG.PAYOUT_THRESHOLD.toLocaleString()} satoshis.`);
+                    return;
+                }
+
+                payoutBtn.disabled = true;
+                payoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Procesando...';
+
+                try {
+                    // Registrar solicitud de retiro
+                    const { error: payoutError } = await supabaseClient
+                        .from('payouts')
+                        .insert([{
+                            user_id: currentUser.id,
+                            username: userProfile.username,
+                            email: userProfile.email,
+                            amount: userProfile.balance,
+                            wallet_address: lnInvoice,
+                            status: 'pending'
+                        }]);
+
+                    if (payoutError) throw payoutError;
+
+                    // Actualizar saldo del usuario
+                    const { error: profileError } = await supabaseClient
+                        .from('profiles')
+                        .update({ balance: 0 })
+                        .eq('id', currentUser.id);
+
+                    if (profileError) throw profileError;
+
+                    // Mostrar confirmación
+                    this.showPayoutSuccess();
+
+                } catch (error) {
+                    console.error('Error de retiro:', error);
+                    this.showPayoutError('Error al procesar el retiro. Inténtalo de nuevo.');
+                } finally {
+                    payoutBtn.disabled = false;
+                    payoutBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Solicitar Retiro';
+                }
+            }
+
+            showPayoutError(message) {
+                const payoutError = document.getElementById('payout-error');
+                const payoutErrorText = document.getElementById('payout-error-text');
+                
+                payoutErrorText.textContent = message;
+                payoutError.classList.remove('hidden');
+            }
+
+            hidePayoutError() {
+                document.getElementById('payout-error').classList.add('hidden');
+            }
+
+            showPayoutSuccess() {
+                document.getElementById('dashboard-content').classList.add('hidden');
+                document.getElementById('payout-sent-panel').classList.remove('hidden');
+            }
+
+            showDashboard() {
+                document.getElementById('payout-sent-panel').classList.add('hidden');
+                document.getElementById('dashboard-content').classList.remove('hidden');
+                document.getElementById('ln-invoice').value = '';
+                this.hidePayoutError();
+            }
+
+            async logout() {
+                await supabaseClient.auth.signOut();
+            }
+
+            showScreen(screenName) {
+                Object.values(screens).forEach(s => s.classList.add('hidden'));
+                screens[screenName]?.classList.remove('hidden');
+                screens[screenName]?.classList.add('fade-in');
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
         }
 
-        function updateDashboardUI(userData) {
-            if (!userData) return;
-            userDisplay.textContent = userData.username;
-            balanceEl.textContent = (userData.balance || 0).toLocaleString();
-            dailySharesEl.textContent = (userData.daily_shares || 0).toLocaleString();
-            payoutBtn.disabled = userData.balance < PAYOUT_THRESHOLD;
-        }
-        
-        function initializeAdPlayer() {
-            if (adPlayer) adPlayer.destroy();
-            adPlayer = new VastPlayer(adPlayerContainer);
-            adPlayer.on('adReady', () => { adStatusEl.textContent = 'Anuncio listo.'; watchAdBtn.disabled = false; });
-            adPlayer.on('adEnd', async () => { adStatusEl.textContent = '¡Participación ganada!'; await claimShare(); setTimeout(() => { adStatusEl.textContent = 'Cargando siguiente anuncio...'; adPlayer.load(VAST_TAG_URL); }, 2000); });
-            adPlayer.on('error', (error) => { adStatusEl.textContent = 'No hay anuncios disponibles ahora.'; setTimeout(() => { adStatusEl.textContent = 'Intentando cargar anuncio...'; adPlayer.load(VAST_TAG_URL); }, 10000); });
-            adStatusEl.textContent = 'Cargando anuncio...';
-            adPlayer.load(VAST_TAG_URL);
-        }
+        // Inicialización
+        const loader = new AppLoader();
+        const app = new SatoshiAdsApp();
 
-        watchAdBtn.addEventListener('click', () => {
-            if (adPlayer && adPlayer.ad) { adStatusEl.textContent = 'Reproduciendo anuncio...'; adPlayer.startAd(); watchAdBtn.disabled = true; } 
-            else { adStatusEl.textContent = 'El anuncio no está listo.'; }
+        // Iniciar aplicación cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            loader.initialize();
         });
-
-        async function claimShare() {
-            if (!currentUser) return;
-            const currentShares = userProfile.daily_shares || 0;
-            const newShares = currentShares + 1;
-            await supabaseClient.from('profiles').update({ daily_shares: newShares }).eq('id', currentUser.id);
-        }
-        
-        payoutForm.addEventListener('submit', async (e) => { e.preventDefault(); payoutErrorEl.classList.add('hidden'); const invoice = lnInvoiceInput.value.trim().toLowerCase(); if (!invoice.startsWith('lnbc')) { payoutErrorEl.textContent = "Factura no válida."; payoutErrorEl.classList.remove('hidden'); return; } if (userProfile.balance < PAYOUT_THRESHOLD) { payoutErrorEl.textContent = `Saldo insuficiente.`; payoutErrorEl.classList.remove('hidden'); return; } payoutBtn.disabled = true; payoutBtn.textContent = "Procesando..."; try { const { error: payoutError } = await supabaseClient.from('payouts').insert({ id: currentUser.id, user_id: currentUser.id, username: userProfile.username, email: userProfile.email, amount: userProfile.balance, wallet_address: invoice, status: "pending" }); if (payoutError) throw payoutError; const { error: profileError } = await supabaseClient.from('profiles').update({ balance: 0 }).eq('id', currentUser.id); if (profileError) throw profileError; dashboardContent.classList.add('hidden'); payoutSentPanel.classList.remove('hidden'); } catch (error) { payoutErrorEl.textContent = "Error al procesar el retiro."; payoutErrorEl.classList.remove('hidden'); } finally { payoutBtn.disabled = false; payoutBtn.textContent = "Solicitar Retiro"; } });
-        backToDashboardBtn.addEventListener('click', () => { payoutSentPanel.classList.add('hidden'); dashboardContent.classList.remove('hidden'); lnInvoiceInput.value = ''; });
-
-        async function main() {
-            supabaseClient.auth.onAuthStateChange((event, session) => {
-                handleAuthStateChange(session?.user);
-            });
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            handleAuthStateChange(session?.user);
-        }
-
-        main();
-    }
     </script>
 </body>
 </html>
-
