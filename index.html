@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SatoshiAds - App Real (Arranque Corregido)</title>
+    
+    <!-- ETIQUETAS DE VERIFICACIÓN DE HILLTOPADS AÑADIDAS -->
+    <meta name="5b8b3715818e54220efd8bff424fc43f93040447" content="5b8b3715818e54220efd8bff424fc43f93040447" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <title>SatoshiAds - App Real (Verificación)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -59,8 +64,8 @@
                     </div>
                 </div>
                 <div class="bg-gray-800 p-6 rounded-xl shadow-lg mb-6 flex flex-col items-center">
-                    <div id="ad-unit-container" class="flex justify-center w-full mb-4">
-                        <iframe data-aa='2401270' src='//ad.a-ads.com/2401270?size=300x250' style='width:300px; height:250px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
+                    <div id="ad-unit-container" class="flex justify-center w-full mb-4 h-64 bg-gray-700 rounded-lg items-center text-center p-4">
+                        <p class="text-gray-400">El reproductor de video aparecerá aquí una vez que tengamos el código VAST.</p>
                     </div>
                     <button id="claim-share-btn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105">
                         🎟️ ¡He visto el anuncio! Ganar Participación
@@ -92,7 +97,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+        // El código JavaScript es el mismo que la versión anterior (v12)
+        // No es necesario cambiarlo, ya que la lógica de la app no se ve afectada
+        // por las metaetiquetas de verificación.
+        document.addEventListener('DOMContentLoaded', () => {
 
         const SUPABASE_URL = 'https://xuvnvzymjntlqtbdmvnk.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dm52enltam50bHF0YmRtdm5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1MTI0ODYsImV4cCI6MjA2NzA4ODQ4Nn0.cfOVV53bsqB6spQ0sltdhzFLc5KQDDIJkBFRj5h8S-U';
@@ -105,7 +113,6 @@
             return;
         }
 
-        // --- SELECTORES DEL DOM ---
         const screens = { loading: document.getElementById('loading-screen'), auth: document.getElementById('auth-screen'), dashboard: document.getElementById('dashboard-screen') };
         const authForm = document.getElementById('auth-form');
         const authTitle = document.getElementById('auth-title');
@@ -131,31 +138,24 @@
         const backToDashboardBtn = document.getElementById('back-to-dashboard-btn');
         const dailySharesEl = document.getElementById('daily-shares');
 
-        // --- ESTADO Y CONFIGURACIÓN DE LA APP ---
         let isLoginMode = true;
         let currentUser = null;
         let userProfile = null;
         let profileSubscription = null;
         const PAYOUT_THRESHOLD = 1000;
         
-        // --- LÓGICA DE NAVEGACIÓN ---
         function showScreen(screenName) {
             Object.values(screens).forEach(s => s.classList.add('hidden'));
             screens[screenName]?.classList.remove('hidden');
             screens[screenName]?.classList.add('fade-in');
         }
 
-        // --- LÓGICA DE AUTENTICACIÓN ---
         authToggleBtn.addEventListener('click', () => { isLoginMode = !isLoginMode; authForm.reset(); authErrorEl.classList.add('hidden'); authTitle.textContent = isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta'; authSubmitBtn.textContent = isLoginMode ? 'Entrar' : 'Registrarme'; authPromptText.textContent = isLoginMode ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'; authToggleBtn.textContent = isLoginMode ? 'Regístrate aquí' : 'Inicia sesión'; usernameField.classList.toggle('hidden', isLoginMode); usernameInput.required = !isLoginMode; });
         authForm.addEventListener('submit', async (e) => { e.preventDefault(); const email = emailInput.value; const password = passwordInput.value; const username = usernameInput.value.trim(); authErrorEl.classList.add('hidden'); authSubmitBtn.disabled = true; try { if (isLoginMode) { const { error } = await supabaseClient.auth.signInWithPassword({ email, password }); if (error) throw error; } else { if (!username) throw { message: 'Por favor, introduce un nombre de usuario.' }; const { data: existingUser } = await supabaseClient.from('profiles').select('username').eq('username', username).single(); if (existingUser) throw { message: 'El nombre de usuario ya está en uso.'}; const { error } = await supabaseClient.auth.signUp({ email, password, options: { data: { username: username } } }); if (error) throw error; } } catch (error) { authErrorEl.textContent = error.message; authErrorEl.classList.remove('hidden'); } finally { authSubmitBtn.disabled = false; } });
         logoutBtn.addEventListener('click', async () => await supabaseClient.auth.signOut());
 
-        // --- MANEJO DEL ESTADO DE SESIÓN ---
         async function handleAuthStateChange(user) {
-            if (profileSubscription) {
-                profileSubscription.unsubscribe();
-                profileSubscription = null;
-            }
+            if (profileSubscription) { profileSubscription.unsubscribe(); profileSubscription = null; }
             currentUser = user;
             if (currentUser) {
                 await setupUserDashboard(currentUser);
@@ -165,7 +165,6 @@
             }
         }
 
-        // --- LÓGICA DEL PANEL DE USUARIO ---
         async function setupUserDashboard(user) {
             payoutThresholdText.textContent = PAYOUT_THRESHOLD.toLocaleString();
             profileSubscription = supabaseClient
@@ -190,7 +189,6 @@
             payoutBtn.disabled = userData.balance < PAYOUT_THRESHOLD;
         }
         
-        // --- LÓGICA DE LA APP ---
         claimShareBtn.addEventListener('click', async () => {
             if (!currentUser || claimShareBtn.disabled) return;
             claimShareBtn.disabled = true;
@@ -236,13 +234,9 @@
             lnInvoiceInput.value = '';
         });
 
-        // --- FUNCIÓN PRINCIPAL DE ARRANQUE ---
         async function main() {
-            // 1. Comprobar la sesión actual inmediatamente
             const { data: { session } } = await supabaseClient.auth.getSession();
             await handleAuthStateChange(session?.user);
-
-            // 2. Escuchar cambios futuros en la sesión
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
                     handleAuthStateChange(session?.user);
@@ -255,4 +249,3 @@
     </script>
 </body>
 </html>
-
