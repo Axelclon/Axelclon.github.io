@@ -8,20 +8,20 @@
     <meta name="5b8b3715818e54220efd8bff424fc43f93040447" content="5b8b3715818e54220efd8bff424fc43f93040447" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
     
-    <title>SatoshiAds - App Final</title>
+    <title>SatoshiAds - App Final (Arranque Definitivo)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- SDK para el Reproductor de Video VAST -->
+    <!-- SDKs externos que se cargarán antes de que se ejecute nuestro script -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/vast-player@1.2.1/dist/vast-player.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         .satoshi-gradient { background: linear-gradient(90deg, #F7931A, #FFAD4A); }
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        /* Estilos para el reproductor de video */
         #ad-player-container {
             width: 100%;
-            max-width: 320px; /* Tamaño común para anuncios de video móviles */
+            max-width: 320px;
             aspect-ratio: 16 / 9;
             background-color: #000;
             border-radius: 0.75rem;
@@ -37,7 +37,7 @@
         <!-- Pantalla de Carga -->
         <div id="loading-screen" class="text-center">
             <h1 class="text-3xl font-bold satoshi-gradient text-transparent bg-clip-text">Satoshi<span class="font-light">Ads</span></h1>
-            <p class="text-gray-400 mt-2">Conectando al servidor...</p>
+            <p id="loading-text" class="text-gray-400 mt-2">Cargando recursos...</p>
         </div>
 
         <!-- Pantalla de Autenticación (sin cambios) -->
@@ -46,7 +46,7 @@
             <div class="bg-gray-800 p-8 rounded-xl shadow-lg"><h2 id="auth-title" class="text-xl font-bold text-center mb-6">Iniciar Sesión</h2><form id="auth-form"><div id="username-field" class="mb-4 hidden"><label for="username" class="block text-sm font-medium text-gray-300 mb-2">Nombre de Usuario</label><input type="text" id="username" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:ring-orange-500 focus:border-orange-500" placeholder="tu_usuario"></div><div class="mb-4"><label for="email" class="block text-sm font-medium text-gray-300 mb-2">Correo Electrónico</label><input type="email" id="email" required class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:ring-orange-500 focus:border-orange-500" placeholder="tu@email.com"></div><div class="mb-6"><label for="password" class="block text-sm font-medium text-gray-300 mb-2">Contraseña</label><input type="password" id="password" required class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:ring-orange-500 focus:border-orange-500" placeholder="••••••••"></div><p id="auth-error" class="text-red-400 text-center text-sm mb-4 hidden"></p><button type="submit" id="auth-submit-btn" class="w-full satoshi-gradient text-gray-900 font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-opacity">Entrar</button></form><p class="text-center text-sm text-gray-400 mt-6"><span id="auth-prompt-text">¿No tienes cuenta?</span><button id="auth-toggle-btn" class="font-semibold text-orange-400 hover:underline">Regístrate aquí</button></p></div>
         </div>
 
-        <!-- Panel Principal del Usuario -->
+        <!-- Panel Principal del Usuario (sin cambios en la estructura) -->
         <div id="dashboard-screen" class="hidden w-full">
              <header class="flex justify-between items-center mb-6 pt-4">
                 <h1 class="text-2xl font-bold satoshi-gradient text-transparent bg-clip-text">Satoshi<span class="font-light">Ads</span></h1>
@@ -68,7 +68,6 @@
                         <div><p class="text-gray-400 text-sm">Valor Ayer / Part.</p><p id="last-day-value" class="text-2xl font-bold">~2 sats</p></div>
                     </div>
                 </div>
-                <!-- Bloque de Anuncios con Reproductor de Video VAST -->
                 <div class="bg-gray-800 p-6 rounded-xl shadow-lg mb-6 flex flex-col items-center">
                     <div id="ad-player-container" class="mb-4"></div>
                     <p id="ad-status" class="text-sm text-yellow-400 h-5 mb-2"></p>
@@ -76,7 +75,6 @@
                         ▶️ Ver Anuncio para Ganar Participación
                     </button>
                 </div>
-                <!-- Sección de Retiro (sin cambios) -->
                 <div id="payout-section" class="bg-gray-800 p-6 rounded-xl shadow-lg">
                     <h3 class="text-lg font-semibold">Retirar Saldo por Lightning</h3>
                     <p class="text-sm text-gray-400 mb-4">Mínimo para retirar: <span id="payout-threshold-text">1,000</span> satoshis.</p>
@@ -91,25 +89,31 @@
         </div>
     </div>
 
-    <!-- SDK de Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    // --- MÉTODO DE ARRANQUE ROBUSTO ---
+    // Este código se ejecuta cuando la ventana entera, incluyendo todos los scripts, está cargada.
+    window.onload = function() {
+        const loadingText = document.getElementById('loading-text');
 
+        // 1. Verificar que las herramientas externas existen
+        if (typeof supabase === 'undefined' || typeof VastPlayer === 'undefined') {
+            loadingText.textContent = 'Error: Las herramientas externas no se pudieron cargar. Revisa tu conexión.';
+            loadingText.classList.add('text-red-400');
+            return; // Detener la ejecución si las herramientas no están listas
+        }
+
+        // 2. Si todo está bien, ejecutar la lógica principal de la aplicación
+        runApp();
+    };
+
+    // --- LÓGICA PRINCIPAL DE LA APLICACIÓN ---
+    function runApp() {
         const SUPABASE_URL = 'https://xuvnvzymjntlqtbdmvnk.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1dm52enltam50bHF0YmRtdm5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1MTI0ODYsImV4cCI6MjA2NzA4ODQ4Nn0.cfOVV53bsqB6spQ0sltdhzFLc5KQDDIJkBFRj5h8S-U';
         const VAST_TAG_URL = 'https://onda-cilíndrica.com/dxmCFaz.doGrNTv/ZWGgUB/nezmO9OuwZXUKlekcP/T_Y/0GNfzSQm1SNqzXAHtmN/j/Qw3BN-DtUT3WM/Qq';
 
-        let supabaseClient;
-        try {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch(e) {
-            document.getElementById('loading-screen').innerHTML = `<p class="text-red-400">Error: No se pudo conectar con el servidor.</p>`;
-            return;
-        }
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // --- SELECTORES DEL DOM ---
         const screens = { loading: document.getElementById('loading-screen'), auth: document.getElementById('auth-screen'), dashboard: document.getElementById('dashboard-screen') };
         const authForm = document.getElementById('auth-form');
         const authTitle = document.getElementById('auth-title');
@@ -133,12 +137,10 @@
         const payoutSentPanel = document.getElementById('payout-sent-panel');
         const backToDashboardBtn = document.getElementById('back-to-dashboard-btn');
         const dailySharesEl = document.getElementById('daily-shares');
-        // Video Player
         const adPlayerContainer = document.getElementById('ad-player-container');
         const adStatusEl = document.getElementById('ad-status');
         const watchAdBtn = document.getElementById('watch-ad-btn');
 
-        // --- ESTADO Y CONFIGURACIÓN DE LA APP ---
         let isLoginMode = true;
         let currentUser = null;
         let userProfile = null;
@@ -146,12 +148,16 @@
         let adPlayer = null;
         const PAYOUT_THRESHOLD = 1000;
         
-        // --- LÓGICA DE AUTENTICACIÓN (sin cambios) ---
+        function showScreen(screenName) {
+            Object.values(screens).forEach(s => s.classList.add('hidden'));
+            screens[screenName]?.classList.remove('hidden');
+            screens[screenName]?.classList.add('fade-in');
+        }
+
         authToggleBtn.addEventListener('click', () => { isLoginMode = !isLoginMode; authForm.reset(); authErrorEl.classList.add('hidden'); authTitle.textContent = isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta'; authSubmitBtn.textContent = isLoginMode ? 'Entrar' : 'Registrarme'; authPromptText.textContent = isLoginMode ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'; authToggleBtn.textContent = isLoginMode ? 'Regístrate aquí' : 'Inicia sesión'; usernameField.classList.toggle('hidden', isLoginMode); usernameInput.required = !isLoginMode; });
         authForm.addEventListener('submit', async (e) => { e.preventDefault(); const email = emailInput.value; const password = passwordInput.value; const username = usernameInput.value.trim(); authErrorEl.classList.add('hidden'); authSubmitBtn.disabled = true; try { if (isLoginMode) { const { error } = await supabaseClient.auth.signInWithPassword({ email, password }); if (error) throw error; } else { if (!username) throw { message: 'Por favor, introduce un nombre de usuario.' }; const { data: existingUser } = await supabaseClient.from('profiles').select('username').eq('username', username).single(); if (existingUser) throw { message: 'El nombre de usuario ya está en uso.'}; const { error } = await supabaseClient.auth.signUp({ email, password, options: { data: { username: username } } }); if (error) throw error; } } catch (error) { authErrorEl.textContent = error.message; authErrorEl.classList.remove('hidden'); } finally { authSubmitBtn.disabled = false; } });
         logoutBtn.addEventListener('click', async () => await supabaseClient.auth.signOut());
 
-        // --- MANEJO DEL ESTADO DE SESIÓN ---
         async function handleAuthStateChange(user) {
             if (profileSubscription) { profileSubscription.unsubscribe(); profileSubscription = null; }
             currentUser = user;
@@ -163,23 +169,12 @@
             }
         }
 
-        // --- LÓGICA DEL PANEL DE USUARIO ---
         async function setupUserDashboard(user) {
             payoutThresholdText.textContent = PAYOUT_THRESHOLD.toLocaleString();
             initializeAdPlayer();
-            
-            profileSubscription = supabaseClient
-                .channel('public:profiles')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` }, payload => {
-                    userProfile = payload.new;
-                    updateDashboardUI(userProfile);
-                })
-                .subscribe();
+            profileSubscription = supabaseClient.channel('public:profiles').on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` }, payload => { userProfile = payload.new; updateDashboardUI(userProfile); }).subscribe();
             const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
-            if (data) {
-                userProfile = data;
-                updateDashboardUI(userProfile);
-            }
+            if (data) { userProfile = data; updateDashboardUI(userProfile); }
         }
 
         function updateDashboardUI(userData) {
@@ -190,74 +185,41 @@
             payoutBtn.disabled = userData.balance < PAYOUT_THRESHOLD;
         }
         
-        // --- LÓGICA DE ANUNCIOS DE VIDEO VAST ---
         function initializeAdPlayer() {
             if (adPlayer) adPlayer.destroy();
             adPlayer = new VastPlayer(adPlayerContainer);
-            
-            adPlayer.on('adReady', () => {
-                adStatusEl.textContent = 'Anuncio listo.';
-                watchAdBtn.disabled = false;
-            });
-
-            adPlayer.on('adEnd', async () => {
-                adStatusEl.textContent = '¡Participación ganada!';
-                await claimShare();
-                setTimeout(() => {
-                    adStatusEl.textContent = 'Cargando siguiente anuncio...';
-                    adPlayer.load(VAST_TAG_URL); // Cargar el siguiente anuncio
-                }, 2000);
-            });
-
-            adPlayer.on('error', (error) => {
-                console.error('Error del reproductor VAST:', error);
-                adStatusEl.textContent = 'No hay anuncios disponibles ahora.';
-                // Intentar cargar de nuevo después de un tiempo
-                setTimeout(() => {
-                    adStatusEl.textContent = 'Intentando cargar anuncio...';
-                    adPlayer.load(VAST_TAG_URL);
-                }, 10000); 
-            });
-
+            adPlayer.on('adReady', () => { adStatusEl.textContent = 'Anuncio listo.'; watchAdBtn.disabled = false; });
+            adPlayer.on('adEnd', async () => { adStatusEl.textContent = '¡Participación ganada!'; await claimShare(); setTimeout(() => { adStatusEl.textContent = 'Cargando siguiente anuncio...'; adPlayer.load(VAST_TAG_URL); }, 2000); });
+            adPlayer.on('error', (error) => { adStatusEl.textContent = 'No hay anuncios disponibles ahora.'; setTimeout(() => { adStatusEl.textContent = 'Intentando cargar anuncio...'; adPlayer.load(VAST_TAG_URL); }, 10000); });
             adStatusEl.textContent = 'Cargando anuncio...';
             adPlayer.load(VAST_TAG_URL);
         }
 
         watchAdBtn.addEventListener('click', () => {
-            if (adPlayer && adPlayer.ad) {
-                adStatusEl.textContent = 'Reproduciendo anuncio...';
-                adPlayer.startAd();
-                watchAdBtn.disabled = true;
-            } else {
-                adStatusEl.textContent = 'El anuncio no está listo.';
-            }
+            if (adPlayer && adPlayer.ad) { adStatusEl.textContent = 'Reproduciendo anuncio...'; adPlayer.startAd(); watchAdBtn.disabled = true; } 
+            else { adStatusEl.textContent = 'El anuncio no está listo.'; }
         });
 
         async function claimShare() {
             if (!currentUser) return;
             const currentShares = userProfile.daily_shares || 0;
             const newShares = currentShares + 1;
-            const { error } = await supabaseClient.from('profiles').update({ daily_shares: newShares }).eq('id', currentUser.id);
-            if (error) console.error("Error al actualizar participaciones:", error);
+            await supabaseClient.from('profiles').update({ daily_shares: newShares }).eq('id', currentUser.id);
         }
         
-        // --- LÓGICA DE RETIROS (sin cambios) ---
-        payoutForm.addEventListener('submit', async (e) => { e.preventDefault(); payoutErrorEl.classList.add('hidden'); const invoice = lnInvoiceInput.value.trim().toLowerCase(); if (!invoice.startsWith('lnbc')) { payoutErrorEl.textContent = "Factura no válida. Debe empezar con 'lnbc'."; payoutErrorEl.classList.remove('hidden'); return; } if (userProfile.balance < PAYOUT_THRESHOLD) { payoutErrorEl.textContent = `Necesitas al menos ${PAYOUT_THRESHOLD.toLocaleString()} satoshis para retirar.`; payoutErrorEl.classList.remove('hidden'); return; } payoutBtn.disabled = true; payoutBtn.textContent = "Procesando..."; try { const { error: payoutError } = await supabaseClient.from('payouts').insert({ id: currentUser.id, user_id: currentUser.id, username: userProfile.username, email: userProfile.email, amount: userProfile.balance, wallet_address: invoice, status: "pending" }); if (payoutError) throw payoutError; const { error: profileError } = await supabaseClient.from('profiles').update({ balance: 0 }).eq('id', currentUser.id); if (profileError) throw profileError; dashboardContent.classList.add('hidden'); payoutSentPanel.classList.remove('hidden'); } catch (error) { payoutErrorEl.textContent = "No se pudo procesar el retiro. Inténtalo de nuevo."; payoutErrorEl.classList.remove('hidden'); } finally { payoutBtn.disabled = false; payoutBtn.textContent = "Solicitar Retiro"; } });
+        payoutForm.addEventListener('submit', async (e) => { e.preventDefault(); payoutErrorEl.classList.add('hidden'); const invoice = lnInvoiceInput.value.trim().toLowerCase(); if (!invoice.startsWith('lnbc')) { payoutErrorEl.textContent = "Factura no válida."; payoutErrorEl.classList.remove('hidden'); return; } if (userProfile.balance < PAYOUT_THRESHOLD) { payoutErrorEl.textContent = `Saldo insuficiente.`; payoutErrorEl.classList.remove('hidden'); return; } payoutBtn.disabled = true; payoutBtn.textContent = "Procesando..."; try { const { error: payoutError } = await supabaseClient.from('payouts').insert({ id: currentUser.id, user_id: currentUser.id, username: userProfile.username, email: userProfile.email, amount: userProfile.balance, wallet_address: invoice, status: "pending" }); if (payoutError) throw payoutError; const { error: profileError } = await supabaseClient.from('profiles').update({ balance: 0 }).eq('id', currentUser.id); if (profileError) throw profileError; dashboardContent.classList.add('hidden'); payoutSentPanel.classList.remove('hidden'); } catch (error) { payoutErrorEl.textContent = "Error al procesar el retiro."; payoutErrorEl.classList.remove('hidden'); } finally { payoutBtn.disabled = false; payoutBtn.textContent = "Solicitar Retiro"; } });
         backToDashboardBtn.addEventListener('click', () => { payoutSentPanel.classList.add('hidden'); dashboardContent.classList.remove('hidden'); lnInvoiceInput.value = ''; });
 
-        // --- FUNCIÓN PRINCIPAL DE ARRANQUE ---
         async function main() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            await handleAuthStateChange(session?.user);
             supabaseClient.auth.onAuthStateChange((event, session) => {
-                if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
-                    handleAuthStateChange(session?.user);
-                }
+                handleAuthStateChange(session?.user);
             });
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            handleAuthStateChange(session?.user);
         }
 
         main();
-    });
+    }
     </script>
 </body>
 </html>
